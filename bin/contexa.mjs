@@ -77,6 +77,7 @@ if (!repoPath) {
 
 process.env.CONTEXA_REPO = repoPath
 process.env.NUXT_CONTEXA_REPO_PATH = repoPath
+process.env.CONTEXA_PACKAGE_ROOT = packageRoot
 process.env.HOST = host
 process.env.PORT = String(port)
 process.env.NITRO_PORT = String(port)

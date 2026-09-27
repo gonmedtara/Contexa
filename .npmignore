@@ -1,4 +1,4 @@
-# Pack ignore — keep .output for the published CLI server.
+# Pack ignore — keep .output and criteria/ for the published CLI.
 .data
 .nuxt
 .nitro

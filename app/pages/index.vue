@@ -17,6 +17,7 @@ const {
   selectedPath,
   selectedFile,
   selectFile,
+  refresh,
 } = useContextFiles()
 
 const {
@@ -25,6 +26,7 @@ const {
   issuesFor,
   pending: lintPending,
   error: lintError,
+  refresh: refreshLint,
 } = useLint()
 
 const issueCounts = computed(() => {
@@ -36,6 +38,10 @@ const issueCounts = computed(() => {
 })
 
 const selectedIssues = computed(() => issuesFor(selectedPath.value))
+
+async function onSaved() {
+  await Promise.all([refresh(), refreshLint()])
+}
 </script>
 
 <template>
@@ -66,6 +72,7 @@ const selectedIssues = computed(() => issuesFor(selectedPath.value))
       <ContextFilePanel
         :file="selectedFile"
         :issues="selectedIssues"
+        @saved="onSaved"
       />
       <p
         v-if="lintError"
