@@ -54,6 +54,20 @@ function classifyPath(relativePath: string): ContextFileType | null {
   if (name === '.windsurfrules') return 'windsurf'
   if (name === 'SKILL.md') return 'skill'
 
+  // GitHub Copilot repository / path-specific instructions
+  if (
+    normalized === '.github/copilot-instructions.md'
+    || name === 'copilot-instructions.md'
+  ) {
+    return 'copilot'
+  }
+  if (
+    (normalized.includes('/.github/instructions/') || normalized.startsWith('.github/instructions/'))
+    && name.endsWith('.instructions.md')
+  ) {
+    return 'copilot'
+  }
+
   // IDE agent rules directory (dotfolder + /rules/)
   const ideRulesMarker = '/.' + 'cursor' + '/rules/'
   if (

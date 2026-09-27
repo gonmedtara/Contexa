@@ -18,6 +18,7 @@ const emit = defineEmits<{
 const TYPE_LABELS: Record<ContextFileType, string> = {
   agents: 'AGENTS',
   claude: 'CLAUDE',
+  copilot: 'Copilot',
   'ide-rule': 'IDE rule',
   windsurf: 'Windsurf',
   skill: 'Skill',

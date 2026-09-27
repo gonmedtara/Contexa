@@ -6,6 +6,7 @@
 export type ContextFileType =
   | 'agents'
   | 'claude'
+  | 'copilot'
   | 'ide-rule'
   | 'windsurf'
   | 'skill'
