@@ -1,18 +1,11 @@
 /**
- * Nitro plugin: resolves the target repo at server boot (CLI / env / cwd)
- * and logs a short summary. Scanning itself stays on-demand via the API
- * so later watch / write phases can refresh without restarting.
+ * Nitro plugin: log the folder being scanned at boot.
+ * Path comes from the CLI env (CONTEXA_REPO), never from a baked build path.
  */
 export default defineNitroPlugin(async () => {
-  const config = useRuntimeConfig()
-  const repoPath =
-    (config.contexa as { repoPath?: string } | undefined)?.repoPath
-    || process.env.CONTEXA_REPO
-    || process.cwd()
-
-  process.env.CONTEXA_REPO = repoPath
-
   try {
+    const repoPath = resolveRepoPath()
+    process.env.CONTEXA_REPO = repoPath
     const { files } = await scanRepo(repoPath)
     console.info(
       `[contexa] scanning ${repoPath} — ${files.length} context file(s)`,

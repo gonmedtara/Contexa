@@ -2,22 +2,26 @@ import { existsSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 /**
- * Resolve the target repo path from runtime config / env.
- * CLI (`bin/contexa.mjs`) sets CONTEXA_REPO before Nuxt starts.
+ * Resolve the target folder path.
+ * Prefer runtime env (set by the CLI) over build-time runtimeConfig values.
  */
 export function resolveRepoPath(explicit?: string): string {
+  const config = useRuntimeConfig()
+  const fromConfig = (config.contexa as { repoPath?: string } | undefined)?.repoPath
+
   const candidate =
-    explicit?.trim() ||
-    (useRuntimeConfig().contexa as { repoPath?: string } | undefined)?.repoPath ||
-    process.env.CONTEXA_REPO ||
-    process.cwd()
+    explicit?.trim()
+    || process.env.CONTEXA_REPO?.trim()
+    || process.env.NUXT_CONTEXA_REPO_PATH?.trim()
+    || (fromConfig && fromConfig.length > 0 ? fromConfig : '')
+    || process.cwd()
 
   const absolute = resolve(candidate)
 
   if (!existsSync(absolute) || !statSync(absolute).isDirectory()) {
     throw createError({
       statusCode: 400,
-      statusMessage: `Contexa repo path is not a directory: ${absolute}`,
+      statusMessage: `Contexa folder path is not a directory: ${absolute}`,
     })
   }
 
