@@ -1,0 +1,85 @@
+:root {
+  --cx-bg: #f6f5f2;
+  --cx-surface: #ffffff;
+  --cx-border: #ddd8cf;
+  --cx-text: #1c1b19;
+  --cx-muted: #6b6560;
+  --cx-accent: #0f5c4c;
+  --cx-accent-soft: #e4f1ed;
+  --cx-danger-soft: #f7ebe8;
+  --cx-radius: 8px;
+  --cx-font: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --cx-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+  --cx-sidebar: 280px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--cx-bg);
+  color: var(--cx-text);
+  font-family: var(--cx-font);
+  line-height: 1.5;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 0% 0%, #ebe7df 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, #e8efe9 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--cx-accent);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+code,
+pre {
+  font-family: var(--cx-mono);
+}
+
+/* Nuxt Content prose inside sections */
+.cx-prose :deep(p) {
+  margin: 0 0 0.75rem;
+}
+
+.cx-prose :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.cx-prose :deep(ul),
+.cx-prose :deep(ol) {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.cx-prose :deep(h3),
+.cx-prose :deep(h4) {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.cx-prose :deep(pre) {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  overflow: auto;
+  background: #f0eeea;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.cx-prose :deep(code) {
+  font-size: 0.9em;
+}
