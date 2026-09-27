@@ -5,6 +5,7 @@ Shared instructions for AI coding agents working in this repository.
 ## Must
 
 - Prefer small, focused diffs over drive-by refactors.
+- Prefer editing existing files over creating new ones.
 - Never invent APIs that are not present in the codebase.
 - Run the relevant checks before claiming a task is done.
 

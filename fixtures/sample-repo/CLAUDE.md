@@ -10,3 +10,9 @@ This file complements `AGENTS.md`. Prefer AGENTS.md for shared rules.
 
 - `npm run dev` — start the app
 - `npm run build` — production build
+
+## Prompt blocks
+
+<examples>
+Show a short happy-path example here.
+<!-- missing closing tag on purpose for lint demo -->

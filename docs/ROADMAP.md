@@ -5,7 +5,7 @@ Document de suivi des étapes. Mettre à jour le statut à chaque phase livrée.
 | Phase | Objectif | Statut |
 |-------|----------|--------|
 | 1 | Scanner + parser + UI lecture seule | Fait |
-| 2 | Moteur de linting prompt-engineering | En cours |
+| 2 | Moteur de linting prompt-engineering | Fait |
 | 3 | Diff + écriture sécurisée via git | À faire |
 | 4 | Refonte visuelle (design system, Histoire) | À faire |
 

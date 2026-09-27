@@ -26,7 +26,7 @@ Voir [AGENTS.md](./AGENTS.md) et [docs/ROADMAP.md](./docs/ROADMAP.md).
 | Phase | Contenu |
 |-------|---------|
 | **1** (faite) | Scanner, parser, UI lecture seule |
-| **2** | Linting prompt-engineering |
+| **2** (faite) | Linting prompt-engineering |
 | **3** | Diff + écriture sécurisée via git |
 | **4** | Refonte visuelle |
 

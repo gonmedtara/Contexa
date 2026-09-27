@@ -4,3 +4,4 @@ Follow AGENTS.md as the source of truth.
 
 - Do not commit secrets.
 - Prefer editing existing files over creating new ones.
+- Handle edge cases appropriately and refactor as needed.

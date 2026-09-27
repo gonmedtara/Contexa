@@ -25,11 +25,11 @@ Ces fichiers se dupliquent entre outils IA, dérivent avec le temps, et sont pé
 - UI lecture seule : liste des fichiers, frontmatter lisible, sections en accordéon.
 - **Contrainte :** aucune écriture disque.
 
-### Phase 2 — Moteur de linting prompt-engineering (en cours)
+### Phase 2 — Moteur de linting prompt-engineering (faite)
 
-- Règles déterministes sur les fichiers parsés (modalité must/should, sections vides, frontmatter manquant, redondance inter-fichiers, formulations vagues, structure).
-- API de lint + affichage des issues dans l’UI (toujours sans écriture).
-- Architecture ouverte pour brancher d’autres règles plus tard.
+- Règles déterministes sur les fichiers parsés (modalité must/should, sections vides, frontmatter manquant, redondance inter-fichiers, formulations vagues, structure, équilibre des balises XML de prompt).
+- API `GET /api/lint` + badges / panneau d’issues dans l’UI (toujours sans écriture).
+- Registre de règles extensible (`server/utils/lint/rules/`).
 
 ### Phase 3 — Diff + écriture sécurisée via git
 
