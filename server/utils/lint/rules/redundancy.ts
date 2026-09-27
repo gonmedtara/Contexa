@@ -1,5 +1,6 @@
-import type { LintRule } from '../../../../shared/types/lint'
+import type { LintIssue, LintRuleContext } from '../../../../shared/types/lint'
 import type { ParsedContextFile } from '../../../../shared/types/context'
+import { ruleDef } from '../../criteria'
 
 function normalizeLine(line: string): string {
   return line
@@ -11,59 +12,54 @@ function normalizeLine(line: string): string {
     .trim()
 }
 
-function substantiveLines(file: ParsedContextFile): string[] {
+function substantiveLines(file: ParsedContextFile, minLen: number): string[] {
   return file.bodyMarkdown
     .split(/\r?\n/)
     .map(normalizeLine)
-    .filter(line => line.length >= 24)
+    .filter(line => line.length >= minLen)
     .filter(line => !line.startsWith('#'))
 }
 
-/**
- * Detect near-duplicate instruction lines shared across context files.
- * Helps catch drift / copy-paste between AGENTS, CLAUDE, skills, etc.
- */
-export const redundancyRule: LintRule = {
-  id: 'cross-file-redundancy',
-  description: 'Report substantive lines duplicated across different context files.',
-  run({ files }) {
-    const issues = []
-    const index = new Map<string, string[]>()
+export function runRedundancyRule(ctx: LintRuleContext): LintIssue[] {
+  const def = ruleDef(ctx.criteria, 'cross-file-redundancy')
+  if (!def) return []
 
-    for (const file of files) {
-      const seenInFile = new Set<string>()
-      for (const line of substantiveLines(file)) {
-        if (seenInFile.has(line)) continue
-        seenInFile.add(line)
-        const paths = index.get(line) ?? []
-        paths.push(file.path)
-        index.set(line, paths)
-      }
+  const minLen = Number(def.minLineLength ?? 24)
+  const issues: LintIssue[] = []
+  const index = new Map<string, string[]>()
+
+  for (const file of ctx.files) {
+    const seenInFile = new Set<string>()
+    for (const line of substantiveLines(file, minLen)) {
+      if (seenInFile.has(line)) continue
+      seenInFile.add(line)
+      const paths = index.get(line) ?? []
+      paths.push(file.path)
+      index.set(line, paths)
     }
+  }
 
-    for (const [line, paths] of index) {
-      const uniquePaths = [...new Set(paths)]
-      if (uniquePaths.length < 2) continue
+  for (const [line, paths] of index) {
+    const uniquePaths = [...new Set(paths)]
+    if (uniquePaths.length < 2) continue
 
-      const preview = line.length > 80 ? `${line.slice(0, 77)}…` : line
+    const preview = line.length > 80 ? `${line.slice(0, 77)}…` : line
+    issues.push({
+      ruleId: def.id,
+      severity: def.severity ?? 'warning',
+      message: `Duplicated instruction across ${uniquePaths.length} files: « ${preview} »`,
+      path: uniquePaths[0],
+    })
+
+    for (const path of uniquePaths.slice(1)) {
       issues.push({
-        ruleId: 'cross-file-redundancy',
-        severity: 'warning' as const,
-        message: `Duplicated instruction across ${uniquePaths.length} files: « ${preview} »`,
-        path: uniquePaths[0],
+        ruleId: def.id,
+        severity: 'info',
+        message: `Also duplicates text from ${uniquePaths[0]}: « ${preview} »`,
+        path,
       })
-
-      // Also attach a lighter info on the other files for navigation.
-      for (const path of uniquePaths.slice(1)) {
-        issues.push({
-          ruleId: 'cross-file-redundancy',
-          severity: 'info' as const,
-          message: `Also duplicates text from ${uniquePaths[0]}: « ${preview} »`,
-          path,
-        })
-      }
     }
+  }
 
-    return issues
-  },
+  return issues
 }

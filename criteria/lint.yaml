@@ -1,0 +1,95 @@
+# Lint criteria for Contexa
+# Host projects may override by placing `.contexa/lint.yaml` at the scanned root.
+#
+# Normative modality language is grounded in:
+# - RFC 2119: https://www.rfc-editor.org/rfc/rfc2119
+# - RFC 8174: https://www.rfc-editor.org/rfc/rfc8174
+# (BCP 14 — only UPPERCASE keywords are normative per RFC 8174)
+
+meta:
+  version: 1
+  basedOn:
+    - name: RFC 2119
+      url: https://www.rfc-editor.org/rfc/rfc2119
+    - name: RFC 8174
+      url: https://www.rfc-editor.org/rfc/rfc8174
+    - name: BCP 14
+      url: https://www.rfc-editor.org/info/bcp14
+
+rules:
+  - id: frontmatter-description
+    enabled: true
+    severity: error
+    description: Certain context file types should expose a description in YAML frontmatter.
+    types: [ide-rule, skill, copilot]
+    requireFrontmatterKeys: [description]
+
+  - id: empty-section
+    enabled: true
+    severity: warning
+    description: Sections with a heading but no body are usually incomplete prompts.
+
+  - id: heading-structure
+    enabled: true
+    severity: warning
+    description: Long context files should expose at least one markdown heading.
+    longFileChars: 400
+
+  - id: modality-signals
+    enabled: true
+    severity: warning
+    description: Review RFC 2119-style obligation language weight in prompts.
+    # Case-insensitive detection of common obligation phrasing (not only UPPERCASE).
+    mustPatterns:
+      - "\\b(must|shall|required|mandatory|obligatoire|interdit)\\b"
+    shouldPatterns:
+      - "\\b(should|preferably|recommended|recommandé|recommandée|idéalement)\\b"
+    weakPatterns:
+      - "\\b(try to|maybe|perhaps|si possible|éventuellement|si besoin)\\b"
+    shouldToMustRatioWarning: 2
+
+  - id: vague-language
+    enabled: true
+    severity: info
+    description: Detect vague filler phrases that weaken prompt instructions.
+    phrases:
+      - appropriately
+      - as needed
+      - etc.
+      - and so on
+      - if necessary
+      - au besoin
+      - selon le contexte
+      - de manière appropriée
+
+  - id: cross-file-redundancy
+    enabled: true
+    severity: warning
+    description: Report substantive lines duplicated across different context files.
+    minLineLength: 24
+
+  - id: xml-tag-balance
+    enabled: true
+    severity: error
+    description: Check that non-HTML XML-ish prompt tags are roughly balanced.
+    ignoredTags:
+      - br
+      - hr
+      - img
+      - a
+      - code
+      - pre
+      - p
+      - ul
+      - ol
+      - li
+      - strong
+      - em
+      - h1
+      - h2
+      - h3
+      - h4
+      - h5
+      - h6
+      - div
+      - span

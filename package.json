@@ -9,6 +9,7 @@
   "files": [
     "bin",
     "scripts",
+    "criteria",
     ".output",
     "shared",
     "app",

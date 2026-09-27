@@ -1,28 +1,29 @@
-import type { LintRule } from '../../../../shared/types/lint'
+import type { LintIssue, LintRuleContext } from '../../../../shared/types/lint'
+import { ruleDef } from '../../criteria'
 
-const REQUIRES_DESCRIPTION = new Set(['ide-rule', 'skill'])
+export function runFrontmatterRule(ctx: LintRuleContext): LintIssue[] {
+  const def = ruleDef(ctx.criteria, 'frontmatter-description')
+  if (!def) return []
 
-/** IDE rules and skills should declare a description in frontmatter. */
-export const frontmatterRule: LintRule = {
-  id: 'frontmatter-description',
-  description: 'Certain context file types should expose a description in YAML frontmatter.',
-  run({ files }) {
-    const issues = []
+  const types = new Set(def.types ?? [])
+  const keys = def.requireFrontmatterKeys ?? ['description']
+  const severity = def.severity ?? 'error'
+  const issues: LintIssue[] = []
 
-    for (const file of files) {
-      if (!REQUIRES_DESCRIPTION.has(file.type)) continue
-
-      const description = file.frontmatter.description
-      if (typeof description !== 'string' || !description.trim()) {
+  for (const file of ctx.files) {
+    if (types.size && !types.has(file.type)) continue
+    for (const key of keys) {
+      const value = file.frontmatter[key]
+      if (typeof value !== 'string' || !value.trim()) {
         issues.push({
-          ruleId: 'frontmatter-description',
-          severity: 'error' as const,
-          message: `Missing frontmatter « description » for ${file.type} file.`,
+          ruleId: def.id,
+          severity,
+          message: `Missing frontmatter « ${key} » for ${file.type} file.`,
           path: file.path,
         })
       }
     }
+  }
 
-    return issues
-  },
+  return issues
 }

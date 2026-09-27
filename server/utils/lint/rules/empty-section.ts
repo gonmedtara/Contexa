@@ -1,27 +1,27 @@
-import type { LintRule } from '../../../../shared/types/lint'
+import type { LintIssue, LintRuleContext } from '../../../../shared/types/lint'
+import { ruleDef } from '../../criteria'
 
-/** Flag accordion sections that have no body content. */
-export const emptySectionRule: LintRule = {
-  id: 'empty-section',
-  description: 'Sections with a heading but no body are usually incomplete prompts.',
-  run({ files }) {
-    const issues = []
+export function runEmptySectionRule(ctx: LintRuleContext): LintIssue[] {
+  const def = ruleDef(ctx.criteria, 'empty-section')
+  if (!def) return []
 
-    for (const file of files) {
-      for (const section of file.sections) {
-        if (section.body.children.length === 0) {
-          issues.push({
-            ruleId: 'empty-section',
-            severity: 'warning' as const,
-            message: `Section « ${section.title} » is empty.`,
-            path: file.path,
-            sectionId: section.id,
-            sectionTitle: section.title,
-          })
-        }
+  const severity = def.severity ?? 'warning'
+  const issues: LintIssue[] = []
+
+  for (const file of ctx.files) {
+    for (const section of file.sections) {
+      if (section.body.children.length === 0) {
+        issues.push({
+          ruleId: def.id,
+          severity,
+          message: `Section « ${section.title} » is empty.`,
+          path: file.path,
+          sectionId: section.id,
+          sectionTitle: section.title,
+        })
       }
     }
+  }
 
-    return issues
-  },
+  return issues
 }

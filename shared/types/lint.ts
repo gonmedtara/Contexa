@@ -1,42 +1,39 @@
 /**
- * Lint types for Phase 2 (prompt-engineering rules).
- * Issues are advisory only — Phase 3 will attach fixes / writes later.
+ * Lint types for Phase 2+ (prompt-engineering rules).
+ * Criteria live in external YAML — see criteria/lint.yaml.
  */
+
+import type { LintCriteriaFile } from './criteria'
+import type { ParsedContextFile } from './context'
 
 export type LintSeverity = 'error' | 'warning' | 'info'
 
 export interface LintIssue {
-  /** Stable rule identifier, e.g. `modality-must-should`. */
   ruleId: string
   severity: LintSeverity
   message: string
-  /** Repo-relative path of the affected file. */
   path: string
-  /** Section id from the parser, when the issue is section-scoped. */
   sectionId?: string
   sectionTitle?: string
-  /** Optional 1-based line hint for future diff/write UX. */
   line?: number
 }
 
 export interface LintResult {
   repoPath: string
   issues: LintIssue[]
-  /** Counts by severity for quick UI badges. */
   summary: {
     error: number
     warning: number
     info: number
   }
+  /** Paths of criteria files that were loaded. */
+  criteriaSources?: string[]
 }
 
 export interface LintRuleContext {
   repoPath: string
-  files: import('./context').ParsedContextFile[]
+  files: ParsedContextFile[]
+  criteria: LintCriteriaFile
 }
 
-export interface LintRule {
-  id: string
-  description: string
-  run: (ctx: LintRuleContext) => LintIssue[] | Promise<LintIssue[]>
-}
+export type LintRuleRunner = (ctx: LintRuleContext) => LintIssue[] | Promise<LintIssue[]>

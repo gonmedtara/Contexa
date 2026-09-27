@@ -1,0 +1,100 @@
+# Edit-mode tag templates.
+# Host projects may override with `.contexa/edit-tags.yaml`.
+#
+# Modality tags follow RFC 2119 / RFC 8174 (BCP 14).
+# XML-ish blocks follow common agent-prompt conventions (Anthropic-style
+# structured prompts, tool-use wrappers, etc.).
+
+meta:
+  version: 1
+  basedOn:
+    - name: RFC 2119
+      url: https://www.rfc-editor.org/rfc/rfc2119
+    - name: RFC 8174
+      url: https://www.rfc-editor.org/rfc/rfc8174
+
+tags:
+  - id: must
+    label: MUST
+    category: modality
+    description: Hard requirement (RFC 2119).
+    snippet: |
+      Agents MUST …
+
+  - id: must-not
+    label: MUST NOT
+    category: modality
+    description: Absolute prohibition (RFC 2119).
+    snippet: |
+      Agents MUST NOT …
+
+  - id: should
+    label: SHOULD
+    category: modality
+    description: Strong recommendation unless a good reason exists (RFC 2119).
+    snippet: |
+      Agents SHOULD …
+
+  - id: may
+    label: MAY
+    category: modality
+    description: Truly optional behavior (RFC 2119).
+    snippet: |
+      Agents MAY …
+
+  - id: xml-rules
+    label: "<rules>"
+    category: xml
+    description: Block of normative rules for the agent.
+    snippet: |
+      <rules>
+      - …
+      </rules>
+
+  - id: xml-examples
+    label: "<examples>"
+    category: xml
+    description: Few-shot examples block.
+    snippet: |
+      <examples>
+      <example>
+      User: …
+      Assistant: …
+      </example>
+      </examples>
+
+  - id: xml-context
+    label: "<context>"
+    category: xml
+    description: Background context the model should keep in mind.
+    snippet: |
+      <context>
+      …
+      </context>
+
+  - id: xml-constraints
+    label: "<constraints>"
+    category: xml
+    description: Hard constraints / boundaries.
+    snippet: |
+      <constraints>
+      - …
+      </constraints>
+
+  - id: xml-output
+    label: "<output_format>"
+    category: xml
+    description: Expected response shape.
+    snippet: |
+      <output_format>
+      …
+      </output_format>
+
+  - id: xml-thinking
+    label: "<thinking>"
+    category: xml
+    description: Optional scratchpad / reasoning scaffold (when you want it explicit).
+    snippet: |
+      <thinking>
+      …
+      </thinking>
