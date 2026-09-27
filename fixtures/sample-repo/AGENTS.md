@@ -1,0 +1,22 @@
+# Repository Agents
+
+Shared instructions for AI coding agents working in this repository.
+
+## Must
+
+- Prefer small, focused diffs over drive-by refactors.
+- Never invent APIs that are not present in the codebase.
+- Run the relevant checks before claiming a task is done.
+
+## Should
+
+- Match existing naming and file layout conventions.
+- Explain trade-offs when choosing between two valid approaches.
+
+## Notes
+
+Nested detail under a section stays grouped with its parent heading.
+
+### Tone
+
+Keep responses concise and actionable.

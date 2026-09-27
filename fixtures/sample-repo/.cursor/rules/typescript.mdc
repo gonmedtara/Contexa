@@ -1,0 +1,11 @@
+---
+description: TypeScript conventions for this repo
+globs: "**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# TypeScript
+
+- Prefer explicit return types on exported functions.
+- Avoid `any`; use `unknown` and narrow.
+- Keep shared types in `shared/` when used by both server and client.
