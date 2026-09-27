@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { ContextFileType, ParsedContextFile } from '../../shared/types/context'
+import type { ParsedContextFile } from '../../shared/types/context'
+import { buildFileTree } from '../utils/file-tree'
 
 const props = defineProps<{
   files: ParsedContextFile[]
@@ -13,20 +14,34 @@ const emit = defineEmits<{
   select: [path: string]
 }>()
 
-const TYPE_LABELS: Record<ContextFileType, string> = {
-  agents: 'AGENTS',
-  claude: 'CLAUDE',
-  'ide-rule': 'IDE rule',
-  windsurf: 'Windsurf',
-  skill: 'Skill',
-}
+const tree = computed(() => buildFileTree(props.files))
 
-function typeLabel(type: ContextFileType) {
-  return TYPE_LABELS[type]
-}
+/** Directories start expanded. */
+const openDirs = ref<Set<string>>(new Set())
 
-function countFor(path: string) {
-  return props.issueCounts?.[path] ?? 0
+watch(
+  tree,
+  (nodes) => {
+    const next = new Set<string>()
+    const walk = (list: typeof nodes) => {
+      for (const node of list) {
+        if (node.kind === 'dir') {
+          next.add(node.path)
+          if (node.children) walk(node.children)
+        }
+      }
+    }
+    walk(nodes)
+    openDirs.value = next
+  },
+  { immediate: true },
+)
+
+function toggleDir(path: string) {
+  const next = new Set(openDirs.value)
+  if (next.has(path)) next.delete(path)
+  else next.add(path)
+  openDirs.value = next
 }
 </script>
 
@@ -53,30 +68,25 @@ function countFor(path: string) {
     <nav
       v-if="files.length"
       class="sidebar__nav"
+      aria-label="Context file tree"
     >
-      <button
-        v-for="file in files"
-        :key="file.path"
-        type="button"
-        class="file"
-        :class="{ 'file--active': file.path === selectedPath }"
-        @click="emit('select', file.path)"
-      >
-        <span class="file__type">{{ typeLabel(file.type) }}</span>
-        <span class="file__row">
-          <span class="file__path">{{ file.path }}</span>
-          <span
-            v-if="countFor(file.path)"
-            class="file__badge"
-          >{{ countFor(file.path) }}</span>
-        </span>
-      </button>
+      <ContextTreeNode
+        v-for="node in tree"
+        :key="node.path"
+        :node="node"
+        :depth="0"
+        :selected-path="selectedPath"
+        :open-dirs="openDirs"
+        :issue-counts="issueCounts"
+        @select="emit('select', $event)"
+        @toggle="toggleDir"
+      />
     </nav>
     <p
       v-else
       class="sidebar__empty"
     >
-      No context files found in this repo.
+      No context files found in this folder.
     </p>
   </aside>
 </template>
@@ -121,66 +131,9 @@ function countFor(path: string) {
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem;
+  gap: 0.05rem;
+  padding: 0.6rem 0.45rem;
   overflow: auto;
-}
-
-.file {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2rem;
-  width: 100%;
-  padding: 0.65rem 0.7rem;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: transparent;
-  text-align: left;
-  color: inherit;
-}
-
-.file:hover {
-  background: var(--cx-bg);
-}
-
-.file--active {
-  background: var(--cx-accent-soft);
-  border-color: color-mix(in srgb, var(--cx-accent) 25%, var(--cx-border));
-}
-
-.file__type {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--cx-accent);
-}
-
-.file__row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.4rem;
-  width: 100%;
-}
-
-.file__path {
-  font-family: var(--cx-mono);
-  font-size: 0.78rem;
-  word-break: break-all;
-  flex: 1;
-}
-
-.file__badge {
-  flex-shrink: 0;
-  min-width: 1.25rem;
-  padding: 0.05rem 0.35rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, #8a6a1c 18%, var(--cx-bg));
-  color: #6a5214;
-  font-family: var(--cx-mono);
-  font-size: 0.68rem;
-  text-align: center;
 }
 
 .sidebar__empty {
