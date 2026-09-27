@@ -1,17 +1,24 @@
 # Contexa
 
-npm dependency that opens a local web UI to **browse**, **tree-navigate**, and **lint** AI context files in a repository or folder.
+npm dependency that opens a local web UI to browse, tree-navigate, lint, and edit AI context files in a repository or folder.
 
-Detected files: `AGENTS.md`, `CLAUDE.md`, IDE rule `*.mdc` / `*.md`, `.windsurfrules`, `**/SKILL.md`.
+Detected files include `AGENTS.md`, `CLAUDE.md`, GitHub Copilot instructions, IDE rule files, `.windsurfrules`, and `**/SKILL.md`.
 
 ## Use in a project
 
+Install as a dev dependency:
+
 ```bash
-npm install -D contexa
+npm install --save-dev contexa
+```
+
+Then launch (scans the current working directory by default):
+
+```bash
 npx contexa
 ```
 
-Optional path (defaults to the current working directory):
+Or point at another folder:
 
 ```bash
 npx contexa /path/to/repo
@@ -35,22 +42,28 @@ See [AGENTS.md](./AGENTS.md) and [docs/ROADMAP.md](./docs/ROADMAP.md).
 | Phase | Scope |
 |-------|--------|
 | **1** (done) | Scanner, parser, read-only UI |
-| **2** (done) | Prompt-engineering lint |
-| **3** (done) | Installable npm package + CLI web UI (gate before writes) |
-| **4** | Diff + safe writes via git |
-| **5** | Visual redesign |
+| **2** (done) | Prompt-engineering lint (criteria externalized) |
+| **3** (done) | Installable npm package + CLI web UI |
+| **4** (in progress) | Edit mode (tag templates) + diff + safe writes via git |
 
-## Architecture (Phases 1–2)
+## Architecture
 
-1. **Scanner** (`server/utils/scanner.ts`) — read-only walk → `{ path, type, content, frontmatter? }`.
-2. **Parser** (`server/utils/parser.ts`) — YAML + markdown AST + h1/h2 sections.
-3. **Lint** (`server/utils/lint/`) — deterministic prompt-engineering rules.
-4. **UI** — file tree, frontmatter, accordion sections, lint panel.
+1. **Scanner** — read-only walk → typed context files (including Copilot).
+2. **Parser** — YAML + markdown AST + h1/h2 sections.
+3. **Lint** — rules driven by `criteria/lint.yaml` (overridable via `.contexa/lint.yaml`).
+4. **Edit tags** — templates from `criteria/edit-tags.yaml` (MUST/SHOULD, XML blocks, …).
+5. **UI** — logo placeholder, file tree, view/edit, lint panel, diff before write.
+
+## Lint criteria
+
+Default criteria ship in [`criteria/lint.yaml`](./criteria/lint.yaml), based on **RFC 2119 / RFC 8174 (BCP 14)**. Host projects may override by adding `.contexa/lint.yaml`.
 
 ## API
 
-- `GET /api/context` — scan + parse (`?repo=` optional).
-- `GET /api/lint` — lint issues.
+- `GET /api/context` — scan + parse (`?repo=` optional)
+- `GET /api/lint` — lint issues
+- `GET /api/edit/tags` — editable tag templates
+- `POST /api/write` — apply an edited file (Phase 4; git-aware)
 
 ## Stack
 

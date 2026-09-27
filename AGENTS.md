@@ -7,14 +7,25 @@ Visual tool for managing AI context files in a repository or folder.
 Contexa is an **npm dependency** you install in a repo (or any folder). Running the CLI opens a local web UI that:
 
 1. Discovers AI markdown / rule files in that tree
-2. Shows them in a **file tree** (arborescence)
-3. Lets you **view** sections and frontmatter (read-only until the write phase)
-4. Lets you **lint** those files with prompt-engineering rules
+2. Shows them in a **file tree**
+3. Lets you **view** and **lint** those files
+4. Lets you **edit** with reusable tag templates, then **diff + write** safely via git
+
+Install:
 
 ```bash
-npm install -D contexa
+npm install --save-dev contexa
+```
+
+Run:
+
+```bash
 npx contexa
-# or
+```
+
+Or:
+
+```bash
 npx contexa /path/to/folder
 ```
 
@@ -22,7 +33,7 @@ Zero-config: with no path argument, the current working directory is scanned.
 
 ## Problem
 
-These files duplicate across AI tools, drift over time, and are painful to edit as raw markdown — yet wording has real impact (semantic weight of “must” vs “should”, XML-ish structure, redundancy across files).
+These files duplicate across AI tools, drift over time, and are painful to edit as raw markdown — yet wording has real impact (semantic weight of MUST vs SHOULD, XML-ish structure, redundancy across files).
 
 ## Targeted files
 
@@ -30,6 +41,7 @@ These files duplicate across AI tools, drift over time, and are painful to edit 
 |------|----------|
 | `agents` | `AGENTS.md` |
 | `claude` | `CLAUDE.md` |
+| `copilot` | `.github/copilot-instructions.md`, `.github/instructions/**/*.instructions.md` |
 | `ide-rule` | IDE rule files `*.mdc` / `*.md` under the editor `rules` directory |
 | `windsurf` | `.windsurfrules` |
 | `skill` | `**/SKILL.md` |
@@ -38,56 +50,54 @@ These files duplicate across AI tools, drift over time, and are painful to edit 
 
 ### Phase 1 — Scanner + read-only viewer (done)
 
-- Nitro scanner: walk a folder from a CLI argument (default: `cwd`).
-- Parser: YAML frontmatter separate from body; body → AST; navigable h1/h2 sections.
-- Read-only UI: file list, readable frontmatter, accordion sections.
-- **Constraint:** no disk writes.
+- Nitro scanner, parser (frontmatter + AST + sections), read-only UI.
+- No disk writes.
 
 ### Phase 2 — Prompt-engineering lint engine (done)
 
-- Deterministic rules on parsed files (modality, empty sections, missing frontmatter, cross-file redundancy, vague language, structure, XML-ish tag balance).
-- `GET /api/lint` + issue badges / panel in the UI (still no writes).
-- Extensible rule registry (`server/utils/lint/rules/`).
+- Lint engine with **externalized criteria** (`criteria/lint.yaml`, host override `.contexa/lint.yaml`).
+- Criteria grounded in RFC 2119 / RFC 8174 (BCP 14), not hardcoded magic strings only.
+- `GET /api/lint` + UI badges / panel.
 
 ### Phase 3 — Installable npm package + CLI web UI (done)
 
-- Publishable / linkable npm package (`contexa` bin).
-- `npx contexa [path]` starts the local server, opens the browser, scans the host folder.
-- Tree navigation + view + lint work when Contexa is installed **as a dependency of another project**.
-- Validated via `npm pack` → install in a throwaway host folder → scan/lint/UI OK.
-- **Gate:** packaging must stay valid before any write/diff phase (Phase 4).
+- `npx contexa [path]` serves the UI for the host folder (tree, view, lint).
+- Gate before writes.
 
-### Phase 4 — Diff + safe writes via git
+### Phase 4 — Edit tags + diff + safe writes via git (in progress)
 
-- Propose fixes, show a diff, write to disk only through a controlled git flow.
-- No silent direct writes.
-
-### Phase 5 — Visual redesign
-
-- Design brief, UI refresh, Vue components (Reka UI + Tailwind), variant docs (Histoire).
-- No full theme system before this phase.
+- Edit mode: pick existing tags (MUST/SHOULD/MAY, XML blocks such as `<examples>`, `<rules>`, …), adapt them in the file.
+- Show a diff, then write through a controlled git-aware flow.
+- No silent writes.
+- Brand mark uses a **logo placeholder** until a final logo asset is provided.
 
 ## Implementation principles
 
-- Do not hard-code assumptions that block linting or later writes (stable shared types, pure scan/parse).
-- Read-only through Phase 3; disk mutation starts in Phase 4.
+- Prefer external criteria / templates over frozen in-code lists.
 - Zero required user config at launch.
+- Logo slot is a placeholder (`public/logo.svg`) — replace later without redesigning the app.
 
 ## Commands
 
+Develop Contexa itself:
+
 ```bash
-# Develop Contexa itself
 npm install
 npm run dev:sample
 npm run build
+```
 
-# Use as a dependency (host repo)
-npm install -D contexa
+Use as a dependency:
+
+```bash
+npm install --save-dev contexa
 npx contexa
 npx contexa ./some/folder
 ```
 
-## API (Phases 1–2)
+## API
 
-- `GET /api/context` — scan + parse (`?repo=` optional).
-- `GET /api/lint` — prompt-engineering issues for the same folder.
+- `GET /api/context` — scan + parse (`?repo=` optional)
+- `GET /api/lint` — lint issues
+- `GET /api/edit/tags` — tag templates for edit mode
+- `POST /api/write` — write an edited file (Phase 4)
