@@ -5,7 +5,13 @@ export function useContextFiles() {
 
   const { data, pending, error, refresh } = useAsyncData(
     'contexa-context',
-    () => $fetch<ParseScanResult>('/api/context'),
+    () => $fetch<ParseScanResult>('/api/context', {
+      query: { _: Date.now() },
+    }),
+    {
+      // Always hit the server after save / explicit refresh.
+      getCachedData: () => undefined,
+    },
   )
 
   const files = computed<ParsedContextFile[]>(() => data.value?.files ?? [])

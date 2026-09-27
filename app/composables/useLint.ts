@@ -3,7 +3,12 @@ import type { LintIssue, LintResult } from '../../shared/types/lint'
 export function useLint() {
   const { data, pending, error, refresh } = useAsyncData(
     'contexa-lint',
-    () => $fetch<LintResult>('/api/lint'),
+    () => $fetch<LintResult>('/api/lint', {
+      query: { _: Date.now() },
+    }),
+    {
+      getCachedData: () => undefined,
+    },
   )
 
   const issues = computed<LintIssue[]>(() => data.value?.issues ?? [])

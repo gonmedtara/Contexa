@@ -39,8 +39,10 @@ const issueCounts = computed(() => {
 
 const selectedIssues = computed(() => issuesFor(selectedPath.value))
 
-async function onSaved() {
-  await Promise.all([refresh(), refreshLint()])
+async function reloadAfterSave() {
+  clearNuxtData(['contexa-context', 'contexa-lint'])
+  await refresh()
+  await refreshLint()
 }
 </script>
 
@@ -72,7 +74,7 @@ async function onSaved() {
       <ContextFilePanel
         :file="selectedFile"
         :issues="selectedIssues"
-        @saved="onSaved"
+        :reload-after-save="reloadAfterSave"
       />
       <p
         v-if="lintError"

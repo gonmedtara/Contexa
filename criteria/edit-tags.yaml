@@ -2,8 +2,8 @@
 # Host projects may override with `.contexa/edit-tags.yaml`.
 #
 # Modality tags follow RFC 2119 / RFC 8174 (BCP 14).
-# XML-ish blocks follow common agent-prompt conventions (Anthropic-style
-# structured prompts, tool-use wrappers, etc.).
+# XML-ish blocks follow common agent-prompt conventions.
+# Frontmatter tags insert into the YAML block at the top of the file.
 
 meta:
   version: 1
@@ -14,6 +14,53 @@ meta:
       url: https://www.rfc-editor.org/rfc/rfc8174
 
 tags:
+  # —— Frontmatter ——
+  - id: fm-block
+    label: "--- frontmatter ---"
+    category: frontmatter
+    description: Create an empty YAML frontmatter block at the top of the file.
+    snippet: |
+      ---
+      description: …
+      ---
+
+  - id: fm-description
+    label: "description:"
+    category: frontmatter
+    description: Short summary used by skills / IDE rules / Copilot path instructions.
+    snippet: "description: …"
+
+  - id: fm-name
+    label: "name:"
+    category: frontmatter
+    description: Skill or package name.
+    snippet: "name: …"
+
+  - id: fm-globs
+    label: "globs:"
+    category: frontmatter
+    description: File globs for IDE rules.
+    snippet: "globs: \"**/*.{ts,vue}\""
+
+  - id: fm-always-apply
+    label: "alwaysApply:"
+    category: frontmatter
+    description: Whether an IDE rule always applies.
+    snippet: "alwaysApply: false"
+
+  - id: fm-apply-to
+    label: "applyTo:"
+    category: frontmatter
+    description: Copilot path-specific applyTo globs.
+    snippet: "applyTo: \"**/*.{ts,tsx}\""
+
+  - id: fm-exclude-agent
+    label: "excludeAgent:"
+    category: frontmatter
+    description: Copilot excludeAgent (code-review | cloud-agent).
+    snippet: "excludeAgent: \"code-review\""
+
+  # —— Modality (RFC 2119) ——
   - id: must
     label: MUST
     category: modality
@@ -42,6 +89,7 @@ tags:
     snippet: |
       Agents MAY …
 
+  # —— XML scaffolds ——
   - id: xml-rules
     label: "<rules>"
     category: xml
@@ -93,7 +141,7 @@ tags:
   - id: xml-thinking
     label: "<thinking>"
     category: xml
-    description: Optional scratchpad / reasoning scaffold (when you want it explicit).
+    description: Optional scratchpad / reasoning scaffold.
     snippet: |
       <thinking>
       …

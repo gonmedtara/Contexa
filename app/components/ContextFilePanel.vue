@@ -6,10 +6,8 @@ import type { ContextFileType, ParsedContextFile } from '../../shared/types/cont
 const props = defineProps<{
   file: ParsedContextFile | null
   issues?: LintIssue[]
-}>()
-
-const emit = defineEmits<{
-  saved: []
+  /** Called after a successful disk write; must reload context + lint before view mode. */
+  reloadAfterSave?: () => Promise<void>
 }>()
 
 const TYPE_LABELS: Record<ContextFileType, string> = {
@@ -21,19 +19,60 @@ const TYPE_LABELS: Record<ContextFileType, string> = {
   skill: 'Skill',
 }
 
+const CATEGORY_ORDER = ['frontmatter', 'modality', 'xml'] as const
+const CATEGORY_LABELS: Record<string, string> = {
+  frontmatter: 'Frontmatter',
+  modality: 'Modality (RFC 2119)',
+  xml: 'XML blocks',
+}
+
 const mode = ref<'view' | 'edit'>('view')
 const draft = ref('')
 const saving = ref(false)
 const saveError = ref<string | null>(null)
 const saveOk = ref<string | null>(null)
-const commitAfterWrite = ref(false)
-const commitMessage = ref('')
+/** Bumps after reload so sections/lint remount with fresh data. */
+const viewEpoch = ref(0)
 
 const { data: tagsPayload } = await useAsyncData('contexa-edit-tags', () =>
-  $fetch<{ tags: EditTagDefinition[], sources?: string[] }>('/api/edit/tags'),
+  $fetch<{ tags: EditTagDefinition[] }>('/api/edit/tags'),
 )
 
 const tags = computed(() => tagsPayload.value?.tags ?? [])
+
+const tagsByCategory = computed(() => {
+  const groups: { id: string, label: string, tags: EditTagDefinition[] }[] = []
+  for (const id of CATEGORY_ORDER) {
+    const list = tags.value.filter(t => t.category === id)
+    if (list.length) {
+      groups.push({ id, label: CATEGORY_LABELS[id] || id, tags: list })
+    }
+  }
+  const known = new Set<string>(CATEGORY_ORDER)
+  const rest = tags.value.filter(t => !known.has(t.category))
+  if (rest.length) {
+    const byCat = new Map<string, EditTagDefinition[]>()
+    for (const tag of rest) {
+      const list = byCat.get(tag.category) ?? []
+      list.push(tag)
+      byCat.set(tag.category, list)
+    }
+    for (const [id, list] of byCat) {
+      groups.push({ id, label: CATEGORY_LABELS[id] || id, tags: list })
+    }
+  }
+  return groups
+})
+
+watch(
+  () => [props.file?.path, props.file?.content] as const,
+  () => {
+    if (mode.value === 'view') {
+      draft.value = props.file?.content ?? ''
+    }
+  },
+  { immediate: true },
+)
 
 watch(
   () => props.file?.path,
@@ -43,7 +82,6 @@ watch(
     saveError.value = null
     saveOk.value = null
   },
-  { immediate: true },
 )
 
 const dirty = computed(() =>
@@ -69,20 +107,62 @@ function cancelEdit() {
   saveOk.value = null
 }
 
+/** Insert a frontmatter field into the YAML block (create the block if missing). */
+function insertFrontmatterLine(line: string) {
+  const trimmed = line.trim()
+  if (trimmed === '---' || trimmed.startsWith('---\n')) {
+    // Full block snippet
+    if (/^---\r?\n[\s\S]*\r?\n---\s*$/.test(draft.value.trimStart()) || draft.value.startsWith('---\n')) {
+      return
+    }
+    draft.value = `${trimmed.endsWith('\n') ? trimmed : `${trimmed}\n`}${draft.value.replace(/^\n+/, '')}`
+    return
+  }
+
+  const fm = draft.value.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
+  if (!fm) {
+    draft.value = `---\n${trimmed}\n---\n\n${draft.value.replace(/^\n+/, '')}`
+    return
+  }
+
+  const key = trimmed.split(':')[0]?.trim()
+  const body = fm[1]
+  const rest = fm[2]
+  if (key && new RegExp(`^${key}\\s*:`, 'm').test(body)) {
+    // Replace existing key line
+    const nextBody = body
+      .split('\n')
+      .map(l => (l.match(new RegExp(`^${key}\\s*:`)) ? trimmed : l))
+      .join('\n')
+    draft.value = `---\n${nextBody}\n---\n${rest}`
+    return
+  }
+
+  const nextBody = body.trimEnd() ? `${body.trimEnd()}\n${trimmed}` : trimmed
+  draft.value = `---\n${nextBody}\n---\n${rest}`
+}
+
 function insertTag(tag: EditTagDefinition) {
-  const snippet = tag.snippet.endsWith('\n') ? tag.snippet : `${tag.snippet}\n`
+  const snippet = tag.snippet.replace(/\n$/, '')
+
+  if (tag.category === 'frontmatter') {
+    insertFrontmatterLine(snippet)
+    return
+  }
+
+  const text = snippet.endsWith('\n') ? snippet : `${snippet}\n`
   const el = document.getElementById('contexa-editor') as HTMLTextAreaElement | null
   if (!el) {
-    draft.value += snippet
+    draft.value += text
     return
   }
   const start = el.selectionStart
   const end = el.selectionEnd
   const before = draft.value.slice(0, start)
   const after = draft.value.slice(end)
-  draft.value = before + snippet + after
+  draft.value = before + text + after
   nextTick(() => {
-    const pos = start + snippet.length
+    const pos = start + text.length
     el.focus()
     el.setSelectionRange(pos, pos)
   })
@@ -94,22 +174,20 @@ async function save() {
   saveError.value = null
   saveOk.value = null
   try {
-    const result = await $fetch<{ ok: boolean, git?: { staged?: boolean, committed?: boolean } }>('/api/write', {
+    await $fetch('/api/write', {
       method: 'POST',
       body: {
         path: props.file.path,
         content: draft.value,
-        commit: commitAfterWrite.value,
-        message: commitMessage.value || undefined,
       },
     })
-    saveOk.value = result.git?.committed
-      ? 'Saved and committed.'
-      : result.git?.staged
-        ? 'Saved and staged in git.'
-        : 'Saved to disk.'
+    // Reload context + lint BEFORE leaving edit mode so the view shows fresh data.
+    if (props.reloadAfterSave) {
+      await props.reloadAfterSave()
+    }
+    viewEpoch.value += 1
     mode.value = 'view'
-    emit('saved')
+    saveOk.value = 'Saved. Lint refreshed.'
   }
   catch (error: unknown) {
     const err = error as { data?: { statusMessage?: string }, message?: string }
@@ -189,38 +267,57 @@ function buildUnifiedDiff(before: string, after: string): string[] {
         </div>
       </header>
 
+      <p
+        v-if="saveOk && mode === 'view'"
+        class="edit__ok"
+      >
+        {{ saveOk }}
+      </p>
+
       <ContextFrontmatter
         v-if="mode === 'view'"
+        :key="`fm-${file.path}-${viewEpoch}`"
         :data="file.frontmatter"
       />
-      <ContextLintPanel :issues="issues ?? []" />
+      <ContextLintPanel
+        :key="`lint-${file.path}-${viewEpoch}-${(issues ?? []).length}`"
+        :issues="issues ?? []"
+      />
 
       <template v-if="mode === 'view'">
         <ContextSections
-          :key="file.path"
+          :key="`sec-${file.path}-${viewEpoch}`"
           :sections="file.sections"
         />
       </template>
 
       <template v-else>
         <section class="edit">
-          <h2 class="edit__title">
-            Tags
-          </h2>
           <p class="edit__hint">
-            Select a tag, then adapt the inserted text. Modality tags follow RFC 2119; XML blocks are common agent-prompt scaffolds.
+            Select a tag, then adapt the text. Frontmatter tags edit the YAML block at the top; modality tags follow RFC 2119; XML blocks are agent-prompt scaffolds.
           </p>
-          <div class="tags">
-            <button
-              v-for="tag in tags"
-              :key="tag.id"
-              type="button"
-              class="tag"
-              :title="tag.description"
-              @click="insertTag(tag)"
-            >
-              {{ tag.label }}
-            </button>
+
+          <div
+            v-for="group in tagsByCategory"
+            :key="group.id"
+            class="tag-group"
+          >
+            <h2 class="edit__title">
+              {{ group.label }}
+            </h2>
+            <div class="tags">
+              <button
+                v-for="tag in group.tags"
+                :key="tag.id"
+                type="button"
+                class="tag"
+                :class="{ 'tag--fm': group.id === 'frontmatter' }"
+                :title="tag.description"
+                @click="insertTag(tag)"
+              >
+                {{ tag.label }}
+              </button>
+            </div>
           </div>
 
           <textarea
@@ -230,39 +327,11 @@ function buildUnifiedDiff(before: string, after: string): string[] {
             spellcheck="false"
           />
 
-          <label class="commit">
-            <input
-              v-model="commitAfterWrite"
-              type="checkbox"
-            >
-            Also create a git commit
-          </label>
-          <p
-            v-if="commitAfterWrite"
-            class="edit__hint"
-          >
-            Requires a git repo in the scanned folder and configured
-            <code>user.name</code> / <code>user.email</code>.
-          </p>
-          <input
-            v-if="commitAfterWrite"
-            v-model="commitMessage"
-            type="text"
-            class="commit__msg"
-            placeholder="Commit message"
-          >
-
           <p
             v-if="saveError"
             class="edit__error"
           >
             {{ saveError }}
-          </p>
-          <p
-            v-if="saveOk"
-            class="edit__ok"
-          >
-            {{ saveOk }}
           </p>
 
           <div
@@ -361,8 +430,12 @@ function buildUnifiedDiff(before: string, after: string): string[] {
   margin-top: 0.5rem;
 }
 
+.tag-group {
+  margin-bottom: 0.85rem;
+}
+
 .edit__title {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.4rem;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -371,7 +444,7 @@ function buildUnifiedDiff(before: string, after: string): string[] {
 }
 
 .edit__hint {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.85rem;
   font-size: 0.85rem;
   color: var(--cx-muted);
 }
@@ -380,7 +453,6 @@ function buildUnifiedDiff(before: string, after: string): string[] {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-bottom: 0.85rem;
 }
 
 .tag {
@@ -393,9 +465,15 @@ function buildUnifiedDiff(before: string, after: string): string[] {
   font-size: 0.75rem;
 }
 
+.tag--fm {
+  background: #f0eeea;
+  color: #3d3a36;
+}
+
 .editor {
   width: 100%;
   min-height: 22rem;
+  margin-top: 0.35rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--cx-border);
   border-radius: var(--cx-radius);
@@ -407,26 +485,8 @@ function buildUnifiedDiff(before: string, after: string): string[] {
   resize: vertical;
 }
 
-.commit {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 0.75rem 0 0.4rem;
-  font-size: 0.85rem;
-}
-
-.commit__msg {
-  width: 100%;
-  max-width: 32rem;
-  padding: 0.45rem 0.65rem;
-  border: 1px solid var(--cx-border);
-  border-radius: 6px;
-  font: inherit;
-  margin-bottom: 0.5rem;
-}
-
-.edit__error { color: #8a3b2c; font-size: 0.85rem; }
-.edit__ok { color: var(--cx-accent); font-size: 0.85rem; }
+.edit__error { color: #8a3b2c; font-size: 0.85rem; margin-top: 0.65rem; }
+.edit__ok { color: var(--cx-accent); font-size: 0.85rem; margin: 0 0 0.85rem; }
 
 .diff {
   margin-top: 1rem;

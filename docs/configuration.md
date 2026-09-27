@@ -69,12 +69,6 @@ tags:
 | `criteria/lint.yaml` | Lint rule definitions and patterns |
 | `criteria/edit-tags.yaml` | MUST/SHOULD/XML snippets for edit mode |
 
-## Git commit (edit → save)
+## Edit → save
 
-When **Also create a git commit** is checked:
-
-1. The scanned folder must be a git repository (`.git` present).
-2. `user.name` and `user.email` must be configured (`git config user.name` / `user.email`).
-3. There must be a real content change vs HEAD.
-
-Otherwise the file is still written (and staged when git exists), and the UI shows a clear error for the commit step.
+**Save** writes the file to disk and refreshes scan + lint in the UI. Git commit is left to your own workflow (not handled by Contexa).

@@ -18,7 +18,7 @@ npx contexa /path/to/repo
 - Discovers AI context files (`AGENTS.md`, `CLAUDE.md`, Copilot instructions, IDE rules, `.windsurfrules`, `SKILL.md`, …)
 - Shows them in a file tree
 - Lints with externalized criteria (`criteria/lint.yaml`, overridable via `.contexa/lint.yaml`)
-- Edit mode with reusable tags (MUST/SHOULD, XML blocks) + diff + optional git commit
+- Edit mode with reusable tags (frontmatter, MUST/SHOULD, XML blocks) + diff + save
 
 ## Documentation
 
