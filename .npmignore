@@ -1,0 +1,13 @@
+# Pack ignore — keep .output for the published CLI server.
+.data
+.nuxt
+.nitro
+.cache
+node_modules
+.git
+fixtures
+docs
+*.log
+.DS_Store
+.env
+.env.*

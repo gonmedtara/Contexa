@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { resolve } from 'node:path'
-
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
@@ -10,8 +8,9 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     contexa: {
-      // Overridden by CONTEXA_REPO (set via bin/contexa.mjs CLI arg).
-      repoPath: process.env.CONTEXA_REPO || resolve(process.cwd()),
+      // Overridden at runtime by CONTEXA_REPO / NUXT_CONTEXA_REPO_PATH (CLI).
+      // Keep empty at build time so a published package does not bake a host path.
+      repoPath: '',
     },
   },
 })

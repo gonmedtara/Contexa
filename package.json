@@ -1,18 +1,48 @@
 {
   "name": "contexa",
-  "private": true,
+  "version": "0.3.0",
+  "description": "Browse and lint AI context files in a repo via a local web UI",
   "type": "module",
   "bin": {
     "contexa": "./bin/contexa.mjs"
   },
+  "files": [
+    "bin",
+    "scripts",
+    ".output",
+    "shared",
+    "app",
+    "server",
+    "public",
+    "nuxt.config.ts",
+    "content.config.ts",
+    "tsconfig.json",
+    "README.md",
+    "AGENTS.md"
+  ],
   "scripts": {
     "dev": "node bin/contexa.mjs dev",
     "dev:sample": "node bin/contexa.mjs dev ./fixtures/sample-repo",
     "build": "nuxt build",
+    "prepack": "nuxt build",
+    "start": "node bin/contexa.mjs start",
+    "start:sample": "node bin/contexa.mjs start ./fixtures/sample-repo",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "prepare": "node ./scripts/prepare.mjs"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "ai",
+    "context",
+    "agents",
+    "lint",
+    "markdown",
+    "cli"
+  ],
+  "license": "MIT",
   "dependencies": {
     "@nuxt/content": "^3.16.0",
     "better-sqlite3": "^13.0.3",
