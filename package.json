@@ -1,0 +1,24 @@
+{
+  "name": "contexa",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "contexa": "./bin/contexa.mjs"
+  },
+  "scripts": {
+    "dev": "node bin/contexa.mjs dev",
+    "dev:sample": "node bin/contexa.mjs dev ./fixtures/sample-repo",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.16.0",
+    "better-sqlite3": "^13.0.3",
+    "nuxt": "^4.5.2",
+    "vue": "^3.5.42",
+    "vue-router": "^5.3.1",
+    "yaml": "^2.9.1"
+  }
+}
