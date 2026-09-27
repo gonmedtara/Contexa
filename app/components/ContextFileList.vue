@@ -48,9 +48,15 @@ function toggleDir(path: string) {
 <template>
   <aside class="sidebar">
     <header class="sidebar__header">
-      <p class="sidebar__brand">
-        Contexa
-      </p>
+      <div class="sidebar__brand">
+        <img
+          src="/logo.svg"
+          alt="Contexa"
+          class="sidebar__logo"
+          width="120"
+          height="32"
+        >
+      </div>
       <p
         class="sidebar__repo"
         :title="repoPath"
@@ -107,9 +113,14 @@ function toggleDir(path: string) {
 
 .sidebar__brand {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar__logo {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 
 .sidebar__repo {
