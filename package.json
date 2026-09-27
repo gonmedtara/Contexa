@@ -30,7 +30,10 @@
     "start:sample": "node bin/contexa.mjs start ./fixtures/sample-repo",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "prepare": "node ./scripts/prepare.mjs"
+    "prepare": "node ./scripts/prepare.mjs",
+    "docs:dev": "vitepress dev docs-site",
+    "docs:build": "vitepress build docs-site",
+    "docs:preview": "vitepress preview docs-site"
   },
   "engines": {
     "node": ">=20"
@@ -51,5 +54,9 @@
     "vue": "^3.5.42",
     "vue-router": "^5.3.1",
     "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitepress": "^1.6.4"
   }
 }

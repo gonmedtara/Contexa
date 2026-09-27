@@ -112,7 +112,8 @@ async function save() {
     emit('saved')
   }
   catch (error: unknown) {
-    saveError.value = error instanceof Error ? error.message : 'Save failed'
+    const err = error as { data?: { statusMessage?: string }, message?: string }
+    saveError.value = err?.data?.statusMessage || err?.message || 'Save failed'
   }
   finally {
     saving.value = false
@@ -236,6 +237,13 @@ function buildUnifiedDiff(before: string, after: string): string[] {
             >
             Also create a git commit
           </label>
+          <p
+            v-if="commitAfterWrite"
+            class="edit__hint"
+          >
+            Requires a git repo in the scanned folder and configured
+            <code>user.name</code> / <code>user.email</code>.
+          </p>
           <input
             v-if="commitAfterWrite"
             v-model="commitMessage"

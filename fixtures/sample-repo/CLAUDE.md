@@ -15,4 +15,11 @@ This file complements `AGENTS.md`. Prefer AGENTS.md for shared rules.
 
 <examples>
 Show a short happy-path example here.
-<!-- missing closing tag on purpose for lint demo -->
+<!-- missing closing tag on purpose for lint demo --><examples>
+<example>
+User: …
+Assistant: …
+</example>
+</examples>
+Agents MAY …
+

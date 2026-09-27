@@ -6,6 +6,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2024-04-03',
   css: ['~/assets/css/main.css'],
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          theme: 'github-light',
+          langs: ['bash', 'shell', 'ts', 'js', 'json', 'yaml', 'md', 'vue', 'html'],
+        },
+      },
+    },
+  },
   runtimeConfig: {
     contexa: {
       // Overridden at runtime by CONTEXA_REPO / NUXT_CONTEXA_REPO_PATH (CLI).

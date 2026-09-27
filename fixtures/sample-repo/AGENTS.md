@@ -18,6 +18,13 @@ Shared instructions for AI coding agents working in this repository.
 
 Nested detail under a section stays grouped with its parent heading.
 
+Install example:
+
+```bash
+npm install --save-dev contexa
+npx contexa
+```
+
 ### Tone
 
 Keep responses concise and actionable.

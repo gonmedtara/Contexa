@@ -43,8 +43,10 @@ export interface ContextSection {
   title: string
   /** Heading level (1–6), or 0 for preamble before the first heading. */
   level: number
-  /** Section body as Nuxt Content / MDC AST for ContentRenderer. */
+  /** Section body as Nuxt Content / MDC AST (lint / transforms). */
   body: ContextAstRoot
+  /** Raw markdown for the section body (fences, lists, …) used by the UI renderer. */
+  markdown: string
 }
 
 /** Scanner result enriched by the parser. */

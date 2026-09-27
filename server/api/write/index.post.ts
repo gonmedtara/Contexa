@@ -22,9 +22,21 @@ function assertInsideRepo(repoPath: string, relativePath: string): string {
   return absolute
 }
 
+function git(repoPath: string, args: string[]) {
+  return spawnSync('git', args, {
+    cwd: repoPath,
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      // Avoid interactive editors during commit.
+      GIT_EDITOR: 'true',
+    },
+  })
+}
+
 /**
  * POST /api/write
- * Phase 4: write an edited context file, optionally stage/commit via git.
+ * Write an edited context file; optionally stage and commit when the folder is a git repo.
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody<WriteBody>(event)
@@ -42,27 +54,62 @@ export default defineEventHandler(async (event) => {
   await writeFile(absolute, body.content, 'utf8')
 
   const gitDir = join(repoPath, '.git')
-  let git: { staged?: boolean, committed?: boolean, message?: string } | null = null
+  const wantsCommit = Boolean(body.commit)
 
-  if (existsSync(gitDir)) {
-    spawnSync('git', ['add', '--', rel], { cwd: repoPath, encoding: 'utf8' })
-    git = { staged: true }
-
-    if (body.commit) {
-      const message = body.message?.trim() || `chore(context): update ${rel}`
-      const result = spawnSync('git', ['commit', '-m', message], {
-        cwd: repoPath,
-        encoding: 'utf8',
+  if (!existsSync(gitDir)) {
+    if (wantsCommit) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Saved to disk, but this folder is not a git repository — cannot commit.',
       })
-      git.committed = result.status === 0
-      git.message = message
-      if (result.status !== 0) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: `File written and staged, but git commit failed: ${result.stderr || result.stdout}`,
-        })
-      }
     }
+    return {
+      ok: true,
+      repoPath,
+      path: rel,
+      bytes: Buffer.byteLength(body.content, 'utf8'),
+      git: null,
+    }
+  }
+
+  const add = git(repoPath, ['add', '--', rel])
+  if (add.status !== 0) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: `File written, but git add failed: ${add.stderr || add.stdout}`,
+    })
+  }
+
+  if (!wantsCommit) {
+    return {
+      ok: true,
+      repoPath,
+      path: rel,
+      bytes: Buffer.byteLength(body.content, 'utf8'),
+      git: { staged: true, committed: false },
+    }
+  }
+
+  const name = git(repoPath, ['config', 'user.name'])
+  const email = git(repoPath, ['config', 'user.email'])
+  if (name.status !== 0 || !name.stdout.trim() || email.status !== 0 || !email.stdout.trim()) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'File written and staged, but git user.name / user.email are not configured in this repo (or globally). Set them, then retry commit.',
+    })
+  }
+
+  const message = body.message?.trim() || `chore(context): update ${rel}`
+  const commit = git(repoPath, ['commit', '-m', message, '--', rel])
+  if (commit.status !== 0) {
+    const detail = (commit.stderr || commit.stdout || '').trim()
+    const nothingToCommit = /nothing to commit/i.test(detail)
+    throw createError({
+      statusCode: nothingToCommit ? 400 : 500,
+      statusMessage: nothingToCommit
+        ? 'File written, but there was nothing new to commit (content unchanged from HEAD).'
+        : `File written and staged, but git commit failed: ${detail || 'unknown error'}`,
+    })
   }
 
   return {
@@ -70,6 +117,6 @@ export default defineEventHandler(async (event) => {
     repoPath,
     path: rel,
     bytes: Buffer.byteLength(body.content, 'utf8'),
-    git,
+    git: { staged: true, committed: true, message },
   }
 })

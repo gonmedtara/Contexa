@@ -1,4 +1,4 @@
-import { parseMarkdown, nodeTextContent } from '@nuxtjs/mdc/runtime'
+import { parseMarkdown } from '@nuxtjs/mdc/runtime'
 import type {
   ContextAstNode,
   ContextAstRoot,
@@ -30,68 +30,122 @@ function headingLevel(tag: string): number {
 }
 
 /**
- * Split an MDC AST into navigable sections by h1/h2 headings.
- * Nested h3+ stay inside the current section body.
+ * Split raw markdown into sections by h1/h2 lines.
+ * Fence-aware so ``` blocks are never treated as headings.
  */
-export function extractSections(ast: ContextAstRoot): ContextSection[] {
-  const sections: ContextSection[] = []
-  const preamble: ContextAstNode[] = []
-  let current: ContextSection | null = null
+export function extractMarkdownSections(bodyMarkdown: string): Array<{
+  id: string
+  title: string
+  level: number
+  markdown: string
+}> {
+  const lines = bodyMarkdown.replace(/\r\n/g, '\n').split('\n')
   const usedIds = new Map<string, number>()
-
   const uniqueId = (base: string) => {
     const count = usedIds.get(base) ?? 0
     usedIds.set(base, count + 1)
     return count === 0 ? base : `${base}-${count + 1}`
   }
 
-  for (const node of ast.children) {
-    if (isHeading(node) && headingLevel(node.tag) <= 2) {
-      if (current) {
-        sections.push(current)
+  const sections: Array<{ id: string, title: string, level: number, markdown: string }> = []
+  let current: { id: string, title: string, level: number, lines: string[] } | null = null
+  const preamble: string[] = []
+  let inFence = false
+  let fenceMarker = ''
+
+  const pushCurrent = () => {
+    if (!current) return
+    sections.push({
+      id: current.id,
+      title: current.title,
+      level: current.level,
+      markdown: current.lines.join('\n').replace(/^\n+/, '').replace(/\n+$/, ''),
+    })
+  }
+
+  for (const line of lines) {
+    const fenceOpen = line.match(/^(```|~~~)/)
+    if (fenceOpen) {
+      if (!inFence) {
+        inFence = true
+        fenceMarker = fenceOpen[1]
       }
-      else if (preamble.length > 0) {
+      else if (line.startsWith(fenceMarker)) {
+        inFence = false
+        fenceMarker = ''
+      }
+    }
+
+    const heading = !inFence ? line.match(/^(#{1,2})\s+(.+?)\s*$/) : null
+    if (heading) {
+      if (current) pushCurrent()
+      else if (preamble.some(l => l.trim())) {
         sections.push({
           id: uniqueId('introduction'),
           title: 'Introduction',
           level: 0,
-          body: { type: 'root', children: [...preamble] },
+          markdown: preamble.join('\n').replace(/^\n+/, '').replace(/\n+$/, ''),
         })
         preamble.length = 0
       }
 
-      const title = nodeTextContent(node as never).trim() || 'Untitled'
+      const title = heading[2].trim()
       current = {
         id: uniqueId(slugify(title)),
         title,
-        level: headingLevel(node.tag),
-        // Heading text lives in the accordion label; body starts after it.
-        body: { type: 'root', children: [] },
+        level: heading[1].length,
+        lines: [],
       }
       continue
     }
 
-    if (current) {
-      current.body.children.push(node)
-    }
-    else {
-      preamble.push(node)
-    }
+    if (current) current.lines.push(line)
+    else preamble.push(line)
   }
 
-  if (current) {
-    sections.push(current)
-  }
-  else if (preamble.length > 0) {
+  if (current) pushCurrent()
+  else if (preamble.some(l => l.trim())) {
     sections.push({
       id: uniqueId('introduction'),
       title: 'Introduction',
       level: 0,
-      body: { type: 'root', children: preamble },
+      markdown: preamble.join('\n').replace(/^\n+/, '').replace(/\n+$/, ''),
     })
   }
 
   return sections
+}
+
+function extractAstBodies(ast: ContextAstRoot): ContextAstRoot[] {
+  const bodies: ContextAstRoot[] = []
+  const preamble: ContextAstNode[] = []
+  let current: ContextAstNode[] | null = null
+
+  const pushCurrent = () => {
+    if (current) bodies.push({ type: 'root', children: current })
+  }
+
+  for (const node of ast.children) {
+    if (isHeading(node) && headingLevel(node.tag) <= 2) {
+      if (current) pushCurrent()
+      else if (preamble.length > 0) {
+        bodies.push({ type: 'root', children: [...preamble] })
+        preamble.length = 0
+      }
+      current = []
+      continue
+    }
+
+    if (current) current.push(node)
+    else preamble.push(node)
+  }
+
+  if (current) pushCurrent()
+  else if (preamble.length > 0) {
+    bodies.push({ type: 'root', children: preamble })
+  }
+
+  return bodies
 }
 
 /**
@@ -99,21 +153,32 @@ export function extractSections(ast: ContextAstRoot): ContextSection[] {
  */
 export async function parseContextFile(file: ContextFile): Promise<ParsedContextFile> {
   const { frontmatter = {}, body: bodyMarkdown } = extractFrontmatter(file.content)
+  const markdownSections = extractMarkdownSections(bodyMarkdown)
 
-  // Parse body only so YAML stays the single source of truth for frontmatter.
   const parsed = await parseMarkdown(bodyMarkdown, {
-    highlight: false,
+    highlight: {
+      theme: 'github-light',
+    },
     contentHeading: false,
   })
 
   const ast = (parsed.body ?? { type: 'root', children: [] }) as ContextAstRoot
+  const astBodies = extractAstBodies(ast)
+
+  const sections: ContextSection[] = markdownSections.map((md, index) => ({
+    id: md.id,
+    title: md.title,
+    level: md.level,
+    markdown: md.markdown,
+    body: astBodies[index] ?? { type: 'root', children: [] },
+  }))
 
   return {
     ...file,
     frontmatter,
     bodyMarkdown,
     ast,
-    sections: extractSections(ast),
+    sections,
   }
 }
 

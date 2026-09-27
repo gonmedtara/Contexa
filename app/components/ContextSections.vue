@@ -7,10 +7,6 @@ const props = defineProps<{
 
 /** First section open by default; user toggles via native <details>. */
 const initiallyOpen = computed(() => props.sections[0]?.id ?? null)
-
-function rendererValue(section: ContextSection) {
-  return { body: section.body }
-}
 </script>
 
 <template>
@@ -29,9 +25,11 @@ function rendererValue(section: ContextSection) {
         <span class="section__title">{{ section.title }}</span>
       </summary>
       <div class="section__body cx-prose">
-        <ContentRenderer
-          v-if="section.body.children.length"
-          :value="rendererValue(section)"
+        <!-- MDC re-parses raw markdown so fenced ``` blocks render as real <pre><code> -->
+        <MDC
+          v-if="section.markdown.trim()"
+          :value="section.markdown"
+          tag="div"
         />
         <p
           v-else
