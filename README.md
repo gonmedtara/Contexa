@@ -1,46 +1,57 @@
 # Contexa
 
-Outil visuel pour inspecter (puis, plus tard, lint et éditer) les fichiers de contexte IA d’un dépôt.
+npm dependency that opens a local web UI to **browse**, **tree-navigate**, and **lint** AI context files in a repository or folder.
 
-Fichiers détectés : `AGENTS.md`, `CLAUDE.md`, règles IDE `*.mdc` / `*.md`, `.windsurfrules`, `**/SKILL.md`.
+Detected files: `AGENTS.md`, `CLAUDE.md`, IDE rule `*.mdc` / `*.md`, `.windsurfrules`, `**/SKILL.md`.
 
-## Démarrage
+## Use in a project
+
+```bash
+npm install -D contexa
+npx contexa
+```
+
+Optional path (defaults to the current working directory):
+
+```bash
+npx contexa /path/to/repo
+```
+
+The CLI starts a local server and opens the browser. No config file required.
+
+## Develop this repo
 
 ```bash
 npm install
 npm run dev:sample
+npm run build
+npm start -- ./fixtures/sample-repo
 ```
-
-Ou sur un dépôt quelconque :
-
-```bash
-npm run dev -- /chemin/vers/depot
-```
-
-Sans argument, le dossier courant est scanné (zéro-config).
 
 ## Phases
 
-Voir [AGENTS.md](./AGENTS.md) et [docs/ROADMAP.md](./docs/ROADMAP.md).
+See [AGENTS.md](./AGENTS.md) and [docs/ROADMAP.md](./docs/ROADMAP.md).
 
-| Phase | Contenu |
-|-------|---------|
-| **1** (faite) | Scanner, parser, UI lecture seule |
-| **2** (faite) | Linting prompt-engineering |
-| **3** | Diff + écriture sécurisée via git |
-| **4** | Refonte visuelle |
+| Phase | Scope |
+|-------|--------|
+| **1** (done) | Scanner, parser, read-only UI |
+| **2** (done) | Prompt-engineering lint |
+| **3** (done) | Installable npm package + CLI web UI (gate before writes) |
+| **4** | Diff + safe writes via git |
+| **5** | Visual redesign |
 
-## Architecture Phase 1
+## Architecture (Phases 1–2)
 
-1. **Scanner** (`server/utils/scanner.ts`) — parcours lecture seule → `{ path, type, content, frontmatter? }`.
-2. **Parser** (`server/utils/parser.ts`) — YAML + AST markdown + sections h1/h2.
-3. **UI** — liste, frontmatter lisible, sections pliables (`ContentRenderer`).
+1. **Scanner** (`server/utils/scanner.ts`) — read-only walk → `{ path, type, content, frontmatter? }`.
+2. **Parser** (`server/utils/parser.ts`) — YAML + markdown AST + h1/h2 sections.
+3. **Lint** (`server/utils/lint/`) — deterministic prompt-engineering rules.
+4. **UI** — file tree, frontmatter, accordion sections, lint panel.
 
 ## API
 
-- `GET /api/context` — scan + parse (`?repo=` optionnel).
-- `GET /api/lint` — issues de lint (Phase 2).
+- `GET /api/context` — scan + parse (`?repo=` optional).
+- `GET /api/lint` — lint issues.
 
 ## Stack
 
-Nuxt 4 (structure app compatible Nuxt 3) · TypeScript · `@nuxt/content` / MDC · Nitro.
+Nuxt 4 · TypeScript · `@nuxt/content` / MDC · Nitro.
