@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { ContextFileType, ParsedContextFile } from '../../shared/types/context'
+import type { LintIssue } from '../../shared/types/lint'
 
 defineProps<{
   file: ParsedContextFile | null
+  issues?: LintIssue[]
 }>()
 
 const TYPE_LABELS: Record<ContextFileType, string> = {
@@ -26,11 +28,13 @@ const TYPE_LABELS: Record<ContextFileType, string> = {
         </h1>
         <p class="panel__meta">
           {{ file.sections.length }} section{{ file.sections.length === 1 ? '' : 's' }}
+          · {{ (issues ?? []).length }} lint
           · read-only
         </p>
       </header>
 
       <ContextFrontmatter :data="file.frontmatter" />
+      <ContextLintPanel :issues="issues ?? []" />
       <ContextSections
         :key="file.path"
         :sections="file.sections"

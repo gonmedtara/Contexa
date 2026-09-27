@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { ContextFileType, ParsedContextFile } from '../../shared/types/context'
 
-defineProps<{
+const props = defineProps<{
   files: ParsedContextFile[]
   selectedPath: string | null
   repoPath: string
+  issueCounts?: Record<string, number>
+  summary?: { error: number, warning: number, info: number }
 }>()
 
 const emit = defineEmits<{
@@ -22,6 +24,10 @@ const TYPE_LABELS: Record<ContextFileType, string> = {
 function typeLabel(type: ContextFileType) {
   return TYPE_LABELS[type]
 }
+
+function countFor(path: string) {
+  return props.issueCounts?.[path] ?? 0
+}
 </script>
 
 <template>
@@ -38,6 +44,9 @@ function typeLabel(type: ContextFileType) {
       </p>
       <p class="sidebar__count">
         {{ files.length }} file{{ files.length === 1 ? '' : 's' }}
+        <template v-if="summary">
+          · {{ summary.error + summary.warning + summary.info }} lint
+        </template>
       </p>
     </header>
 
@@ -54,7 +63,13 @@ function typeLabel(type: ContextFileType) {
         @click="emit('select', file.path)"
       >
         <span class="file__type">{{ typeLabel(file.type) }}</span>
-        <span class="file__path">{{ file.path }}</span>
+        <span class="file__row">
+          <span class="file__path">{{ file.path }}</span>
+          <span
+            v-if="countFor(file.path)"
+            class="file__badge"
+          >{{ countFor(file.path) }}</span>
+        </span>
       </button>
     </nav>
     <p
@@ -142,10 +157,30 @@ function typeLabel(type: ContextFileType) {
   color: var(--cx-accent);
 }
 
+.file__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  width: 100%;
+}
+
 .file__path {
   font-family: var(--cx-mono);
   font-size: 0.78rem;
   word-break: break-all;
+  flex: 1;
+}
+
+.file__badge {
+  flex-shrink: 0;
+  min-width: 1.25rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #8a6a1c 18%, var(--cx-bg));
+  color: #6a5214;
+  font-family: var(--cx-mono);
+  font-size: 0.68rem;
+  text-align: center;
 }
 
 .sidebar__empty {

@@ -18,6 +18,24 @@ const {
   selectedFile,
   selectFile,
 } = useContextFiles()
+
+const {
+  summary,
+  issuesByPath,
+  issuesFor,
+  pending: lintPending,
+  error: lintError,
+} = useLint()
+
+const issueCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  for (const [path, list] of issuesByPath.value) {
+    counts[path] = list.length
+  }
+  return counts
+})
+
+const selectedIssues = computed(() => issuesFor(selectedPath.value))
 </script>
 
 <template>
@@ -41,9 +59,26 @@ const {
         :files="files"
         :selected-path="selectedPath"
         :repo-path="repoPath"
+        :issue-counts="issueCounts"
+        :summary="summary"
         @select="selectFile"
       />
-      <ContextFilePanel :file="selectedFile" />
+      <ContextFilePanel
+        :file="selectedFile"
+        :issues="selectedIssues"
+      />
+      <p
+        v-if="lintError"
+        class="shell__lint-error"
+      >
+        Lint unavailable: {{ lintError.message }}
+      </p>
+      <p
+        v-else-if="lintPending"
+        class="shell__lint-pending"
+      >
+        Running lint…
+      </p>
     </template>
   </div>
 </template>
@@ -68,6 +103,26 @@ const {
   background: var(--cx-danger-soft);
   padding: 2rem;
   text-align: center;
+}
+
+.shell__lint-error,
+.shell__lint-pending {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  background: var(--cx-surface);
+  border: 1px solid var(--cx-border);
+  color: var(--cx-muted);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 6%);
+}
+
+.shell__lint-error {
+  color: #8a3b2c;
+  border-color: color-mix(in srgb, #8a3b2c 30%, var(--cx-border));
 }
 
 @media (max-width: 800px) {
