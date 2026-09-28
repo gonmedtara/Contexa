@@ -7,9 +7,7 @@
 
 ## First publish (required once — do this locally)
 
-`contexai` does **not** exist on npm yet. GitHub Actions **cannot** create the first version via OIDC Trusted Publishing (that setting only appears after the package exists). CI tokens often fail npm’s 2FA rules on first publish.
-
-**Stop re-running the Publish Action until this is done.**
+OIDC Trusted Publishing **cannot** create a brand-new package (package settings only exist after the first version). Bootstrap once locally:
 
 ```bash
 cd /path/to/Contexai
@@ -18,9 +16,7 @@ npm run build
 npm publish --access public
 ```
 
-Confirm: https://www.npmjs.com/package/contexai
-
-Then configure CI (below). Later releases can be fully automated.
+Confirm: https://www.npmjs.com/package/contexai — then configure CI (below).
 
 ## CI after the package exists
 
@@ -30,11 +26,13 @@ Then configure CI (below). Later releases can be fully automated.
    - Organization or user: `gonmedtara`
    - Repository: `Contexai`
    - Workflow filename: `publish.yml`
-   - Environment: leave empty
+   - Environment: leave empty (must match the workflow — ours has none)
    - Allowed actions: include `npm publish`
-2. Delete the GitHub secret `NPM_TOKEN` if present (a bad token overrides OIDC)
+2. Delete the GitHub secret `NPM_TOKEN` if present (a bad token forces token auth and breaks OIDC)
 3. GitHub → **Settings → Actions → General → Workflow permissions → Read and write**
 4. Actions → **Publish npm** → Run workflow (`patch` / `minor` / `major`)
+
+**If CI fails with `404 Not Found - PUT …/contexai` while the package already exists:** Trusted Publishing needs **npm ≥ 11.5.1**. Older CLIs (e.g. npm 10 on Node 22) produce that misleading 404 even when OIDC + provenance look fine. The publish workflow pins Node 24 and upgrades npm.
 
 ### Fallback — `NPM_TOKEN` secret
 

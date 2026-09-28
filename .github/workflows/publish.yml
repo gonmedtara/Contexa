@@ -38,9 +38,15 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Trusted Publishing (OIDC) needs npm ≥ 11.5.1; Node 22 ships npm 10 → E404 on PUT.
+          node-version: 24
           registry-url: https://registry.npmjs.org
           cache: npm
+
+      - name: Ensure npm supports Trusted Publishing
+        run: |
+          npm install -g npm@^11.5.1
+          npm --version
 
       - name: Install
         run: npm ci
@@ -136,7 +142,10 @@ jobs:
               echo "First publish of $NAME must succeed with a Bypass-2FA granular token,"
               echo "or (recommended) publish once locally with npm login + OTP."
             else
-              echo "If you still use NPM_TOKEN and see E403 2FA, delete the secret and use Trusted Publisher (OIDC)."
+              echo "Package exists but publish failed. Common causes:"
+              echo "  - npm < 11.5.1 with Trusted Publishing → misleading E404 on PUT (workflow upgrades npm)"
+              echo "  - Trusted Publisher env/workflow name mismatch on npmjs.com"
+              echo "  - NPM_TOKEN set but invalid/2FA → delete the secret and use OIDC"
             fi
             exit 1
           fi
