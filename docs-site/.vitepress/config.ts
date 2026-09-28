@@ -31,6 +31,7 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Configuration', link: '/guide/configuration' },
       { text: 'Publishing', link: '/guide/publishing' },
+      { text: 'npm', link: 'https://www.npmjs.com/package/contexai' },
     ],
     sidebar: [
       {
@@ -46,12 +47,21 @@ export default defineConfig({
         ],
       },
     ],
-    socialLinks: [],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/gonmedtara/Contexai' },
+      {
+        icon: {
+          svg: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>npm</title><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L11.99 19.15H5.113z"/></svg>',
+        },
+        link: 'https://www.npmjs.com/package/contexai',
+        ariaLabel: 'npm package',
+      },
+    ],
     search: {
       provider: 'local',
     },
     footer: {
-      message: 'Contexai documentation',
+      message: 'Source: <a href="https://github.com/gonmedtara/Contexai">github.com/gonmedtara/Contexai</a> · Package: <a href="https://www.npmjs.com/package/contexai">npmjs.com/package/contexai</a>',
     },
   },
 })

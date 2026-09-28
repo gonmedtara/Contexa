@@ -1,5 +1,11 @@
 # Getting started
 
+## Links
+
+- **npm:** [npmjs.com/package/contexai](https://www.npmjs.com/package/contexai)
+- **Source:** [github.com/gonmedtara/Contexai](https://github.com/gonmedtara/Contexai)
+- **Docs:** [gonmedtara.github.io/Contexai](https://gonmedtara.github.io/Contexai/)
+
 ## Install in a project
 
 ```bash
@@ -33,10 +39,6 @@ npx contexai /path/to/repo
 - IDE rule files under the editor `rules` directory
 - `.windsurfrules`
 - `**/SKILL.md`
-
-## Docs site
-
-Live documentation: [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)
 
 ## Next
 

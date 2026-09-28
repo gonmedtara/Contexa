@@ -10,8 +10,11 @@ hero:
       text: Get started
       link: /guide/getting-started
     - theme: alt
-      text: Configuration
-      link: /guide/configuration
+      text: GitHub
+      link: https://github.com/gonmedtara/Contexai
+    - theme: alt
+      text: npm
+      link: https://www.npmjs.com/package/contexai
 
 features:
   - title: Zero-config CLI

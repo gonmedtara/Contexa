@@ -1,6 +1,8 @@
 # Roadmap
 
-Planned next steps for Contexai (not shipped yet):
+Planned next steps for Contexai (not shipped yet).
+
+Source and package: [GitHub](https://github.com/gonmedtara/Contexai) · [npm](https://www.npmjs.com/package/contexai)
 
 ## AI-assisted lint
 

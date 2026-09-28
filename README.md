@@ -47,6 +47,8 @@ Details: [docs-site/guide/roadmap.md](./docs-site/guide/roadmap.md) · live docs
 
 **Live docs:** [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)
 
+**Source:** [github.com/gonmedtara/Contexai](https://github.com/gonmedtara/Contexai) · **npm:** [npmjs.com/package/contexai](https://www.npmjs.com/package/contexai)
+
 Local preview: `npm run docs:dev` (sources in `docs-site/`).
 
 Also in this repo:

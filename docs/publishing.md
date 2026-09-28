@@ -43,10 +43,6 @@ Confirm: https://www.npmjs.com/package/contexai — then configure CI (below).
 
 While provenance is signed but PUT returns 404 / “do not have permission”, the Trusted Publisher on npmjs.com does not match this workflow. Check the table above (especially **Repository case** and **Allowed actions → npm publish**).
 
-### If the npm page still shows an older version
-
-After `npm publish`, the registry can take a few minutes (“Your package is being processed…”) before `latest` updates. Refresh https://www.npmjs.com/package/contexai — or check **Staged Packages** and approve with 2FA if your Trusted Publisher only allows `npm stage publish`.
-
 ### Fallback — local publish
 
 ```bash

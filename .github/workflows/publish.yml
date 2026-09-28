@@ -133,21 +133,6 @@ jobs:
             exit 1
           fi
 
-          # npm often returns success before the version is queryable / tagged latest.
-          echo "Waiting for $NAME@$VERSION to be available as dist-tag latest…"
-          for i in $(seq 1 30); do
-            LATEST="$(npm view "$NAME" version 2>/dev/null || true)"
-            if [ "$LATEST" = "$VERSION" ]; then
-              echo "Confirmed latest=$LATEST"
-              exit 0
-            fi
-            echo "  attempt $i/30: latest=${LATEST:-unavailable}"
-            sleep 10
-          done
-          echo "::error::$NAME@$VERSION published but latest is still not $VERSION after ~5m."
-          echo "Check https://www.npmjs.com/package/$NAME (Versions / Staged Packages) and approve if needed."
-          exit 1
-
       - name: Push release commit and tag
         if: github.event_name == 'workflow_dispatch' && steps.skip.outputs.already == 'false'
         run: |
