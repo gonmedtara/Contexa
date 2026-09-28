@@ -40,6 +40,7 @@ export default defineConfig({
           { text: 'CLI reference', link: '/guide/cli' },
           { text: 'Configuration', link: '/guide/configuration' },
           { text: 'Edit mode', link: '/guide/edit-and-commit' },
+          { text: 'Roadmap', link: '/guide/roadmap' },
           { text: 'Publishing to npm', link: '/guide/publishing' },
           { text: 'Deploying these docs', link: '/guide/docs-hosting' },
         ],

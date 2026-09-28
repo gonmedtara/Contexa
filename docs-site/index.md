@@ -20,4 +20,6 @@ features:
     details: Rules live in YAML (RFC 2119-based) and can be overridden per project.
   - title: Edit tags + git
     details: Insert MUST/SHOULD/XML scaffolds, preview a diff, save and optionally commit.
+  - title: Coming next
+    details: AI-assisted lint, and ways to share context packs across multiple projects.
 ---

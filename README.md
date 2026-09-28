@@ -34,6 +34,15 @@ npx contexai /path/to/repo
 - Lints with externalized criteria (`criteria/lint.yaml`, overridable via `.contexai/lint.yaml`)
 - Edit mode with reusable tags (frontmatter, MUST/SHOULD, XML blocks) + diff + save
 
+## Roadmap
+
+Next steps (not shipped yet):
+
+- **AI-assisted lint** — optional model-backed review of context files (clarity, contradictions, prompt quality) alongside the current rule-based lint
+- **Share context across projects** — reuse the same agents, prompts, instructions, and skills across multiple repositories without copy-paste drift
+
+Details: [docs-site/guide/roadmap.md](./docs-site/guide/roadmap.md) · live docs after deploy: [Roadmap](https://gonmedtara.github.io/Contexai/guide/roadmap)
+
 ## Documentation
 
 **Live docs:** [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)

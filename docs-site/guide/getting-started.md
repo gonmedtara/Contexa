@@ -43,3 +43,4 @@ Live documentation: [https://gonmedtara.github.io/Contexai/](https://gonmedtara.
 - [CLI reference](./cli)
 - [Configuration](./configuration)
 - [Edit & git commit](./edit-and-commit)
+- [Roadmap](./roadmap)
