@@ -16,6 +16,13 @@ const emit = defineEmits<{
 
 const tree = computed(() => buildFileTree(props.files))
 
+/** Display folder name only; full path stays on the title tooltip. */
+const repoLabel = computed(() => {
+  const normalized = props.repoPath.replace(/[/\\]+$/, '')
+  const parts = normalized.split(/[/\\]/).filter(Boolean)
+  return parts.at(-1) || props.repoPath
+})
+
 /** Directories start expanded. */
 const openDirs = ref<Set<string>>(new Set())
 
@@ -61,7 +68,7 @@ function toggleDir(path: string) {
         class="sidebar__repo"
         :title="repoPath"
       >
-        {{ repoPath }}
+        {{ repoLabel }}
       </p>
       <p class="sidebar__count">
         {{ files.length }} file{{ files.length === 1 ? '' : 's' }}

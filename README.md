@@ -6,6 +6,10 @@
 
 <p align="center">Browse, lint, and edit AI context files in a repository via a local web UI.</p>
 
+<p align="center">
+  <img src="docs/images/contexai-ui.png" alt="Contexai app screenshot" width="900">
+</p>
+
 ```bash
 npm install --save-dev contexai
 npx contexai

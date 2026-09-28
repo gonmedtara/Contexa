@@ -48,6 +48,14 @@
     "cli"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gonmedtara/Contexai.git"
+  },
+  "homepage": "https://gonmedtara.github.io/Contexai/",
+  "bugs": {
+    "url": "https://github.com/gonmedtara/Contexai/issues"
+  },
   "dependencies": {
     "@nuxt/content": "^3.16.0",
     "better-sqlite3": "^13.0.3",

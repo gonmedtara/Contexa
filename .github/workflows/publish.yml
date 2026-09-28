@@ -95,15 +95,33 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
+          NAME="$(node -p "require('./package.json').name")"
+          PACKAGE_EXISTS=false
+          if npm view "$NAME" name >/dev/null 2>&1; then
+            PACKAGE_EXISTS=true
+          fi
+
+          if [ "$PACKAGE_EXISTS" != true ]; then
+            echo "::error::$NAME is not on npm yet."
+            echo "OIDC Trusted Publishing cannot create a package's first version."
+            echo "Do a one-time local publish, then configure Trusted Publisher:"
+            echo "  npm login"
+            echo "  npm run build"
+            echo "  npm publish --access public"
+            echo "Docs: docs/publishing.md"
+            # Still allow a valid bypass-2FA token to bootstrap, but fail loudly if none/invalid.
+            if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+              exit 1
+            fi
+            echo "NPM_TOKEN is set — attempting first publish with the token…"
+          fi
+
           if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
             echo "Using repository secret NPM_TOKEN"
-            # Force the CI token into npmrc (avoids stale/session auth winning).
             printf '%s\n' "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > "$HOME/.npmrc"
             npm whoami || true
           else
-            echo "NPM_TOKEN is not set - using npm Trusted Publishing (OIDC)"
-            echo "For a brand-new package name, prefer a granular NPM_TOKEN with Bypass 2FA first;"
-            echo "then configure Trusted Publisher and remove the secret."
+            echo "NPM_TOKEN is not set — using npm Trusted Publishing (OIDC)"
             unset NODE_AUTH_TOKEN
             for rc in "$HOME/.npmrc" .npmrc; do
               if [ -f "$rc" ]; then
@@ -111,14 +129,15 @@ jobs:
               fi
             done
           fi
+
           if ! npm publish --access public --provenance; then
-            echo "::error::npm publish failed (often E403 2FA)."
-            echo "Fix: create a NEW Granular Access Token at https://www.npmjs.com/settings/~/tokens"
-            echo "  - Packages: All packages (needed for first publish of a new name)"
-            echo "  - Permissions: Read and write (publish, not stage-only)"
-            echo "  - Bypass two-factor authentication: ENABLED (set at creation)"
-            echo "Then replace GitHub secret NPM_TOKEN and re-run."
-            echo "Or publish once locally with npm login + OTP, then use Trusted Publisher (OIDC)."
+            echo "::error::npm publish failed."
+            if [ "$PACKAGE_EXISTS" != true ]; then
+              echo "First publish of $NAME must succeed with a Bypass-2FA granular token,"
+              echo "or (recommended) publish once locally with npm login + OTP."
+            else
+              echo "If you still use NPM_TOKEN and see E403 2FA, delete the secret and use Trusted Publisher (OIDC)."
+            fi
             exit 1
           fi
 
