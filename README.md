@@ -4,6 +4,12 @@
 
 <h1 align="center">Contexai</h1>
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/contexai"><img src="https://img.shields.io/npm/v/contexai.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/contexai"><img src="https://img.shields.io/npm/dm/contexai.svg" alt="npm downloads"></a>
+  <a href="https://github.com/gonmedtara/Contexai/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/contexai.svg" alt="license"></a>
+</p>
+
 <p align="center">Browse, lint, and edit AI context files in a repository via a local web UI.</p>
 
 <p align="center">
