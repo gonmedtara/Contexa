@@ -7,10 +7,24 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump before publish
+        required: true
+        type: choice
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -18,6 +32,10 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Need full history + ability to push the release commit/tag.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
@@ -28,11 +46,72 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Configure git
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        if: github.event_name == 'workflow_dispatch'
+        run: npm version "${{ inputs.bump }}" -m "chore: release %s"
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing contexa@$VERSION"
+
+      - name: Align tag with package version
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="${{ steps.version.outputs.version }}"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "::error::Tag v$TAG does not match package.json version $VERSION"
+            exit 1
+          fi
+
       - name: Build
         run: npm run build
 
-      - name: Publish
-        run: npm publish --access public --provenance
+      - name: Skip if already published
+        id: skip
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if npm view "contexa@${VERSION}" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "contexa@${VERSION} is already on npm — nothing to publish."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: steps.skip.outputs.already == 'false'
         env:
-          # Prefer Trusted Publishing (OIDC). Fallback: repository secret NPM_TOKEN.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "Using repository secret NPM_TOKEN"
+          else
+            echo "NPM_TOKEN is not set — using npm Trusted Publishing (OIDC)"
+            echo "If this fails with ENEEDAUTH, either:"
+            echo "  1) Add repo secret NPM_TOKEN (npm automation token), or"
+            echo "  2) Configure Trusted Publisher on npmjs.com for workflow publish.yml"
+            # setup-node writes an empty _authToken; that blocks OIDC. Remove it.
+            unset NODE_AUTH_TOKEN
+            for rc in "$HOME/.npmrc" .npmrc; do
+              if [ -f "$rc" ]; then
+                sed -i '/_authToken/d' "$rc"
+              fi
+            done
+          fi
+          npm publish --access public --provenance
+
+      - name: Push release commit and tag
+        if: github.event_name == 'workflow_dispatch' && steps.skip.outputs.already == 'false'
+        run: |
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin "v${{ steps.version.outputs.version }}"

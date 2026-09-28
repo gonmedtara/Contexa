@@ -4,69 +4,71 @@
 
 - npm account with permission to publish the `contexa` package
 - Node.js 20+
-- Clean git working tree on the version you want to release
+- One of the auth options below configured
 
-## Local publish (manual)
+## Auth (required once)
 
-1. Bump the version:
+The publish workflow needs npm credentials. Pick **one**:
 
-```bash
-npm version patch   # or minor / major
-```
+### Option A — `NPM_TOKEN` secret (simplest)
 
-2. Build and pack (also runs on `prepack`):
+1. npmjs.com → Access Tokens → **Granular Access Token** or **Automation**
+   - Permission: Read and write for package `contexa` (or publish for your user)
+2. GitHub repo → **Settings → Secrets and variables → Actions**
+3. New secret name: `NPM_TOKEN`, value: the token
 
-```bash
-npm run build
-npm pack --dry-run   # review included files
-```
+### Option B — npm Trusted Publishing (OIDC, no long-lived token)
 
-Confirm the tarball contains at least:
+1. Publish the package at least once with Option A, **or** create it on npm first
+2. npmjs.com → package `contexa` → **Settings → Trusted Publisher → GitHub Actions**
+   - Organization or user: `gonmedtara`
+   - Repository: `Contexa`
+   - Workflow filename: `publish.yml`
+   - Environment: leave empty (this workflow does not use an environment)
+3. You can remove `NPM_TOKEN` afterward if you want OIDC-only
 
-- `bin/`
-- `.output/`
-- `criteria/`
-- `package.json`
+Also enable for the bump+push step:
 
-3. Publish:
-
-```bash
-npm publish --access public
-```
-
-4. Push the version tag:
-
-```bash
-git push && git push --tags
-```
+- GitHub → **Settings → Actions → General → Workflow permissions → Read and write permissions**
 
 ## CI publish (recommended)
 
-This repo includes `.github/workflows/publish.yml`.
+Workflow: `.github/workflows/publish.yml`
 
-### Option A — npm Trusted Publishing (OIDC)
+### Bump + publish from the Actions UI
 
-1. On npmjs.com → package settings → **Trusted Publisher** → GitHub Actions  
-   - Repository: `your-org/contexa`  
-   - Workflow: `publish.yml`
-2. Push a tag `vX.Y.Z` matching `package.json` version, or use **Release** on GitHub.
-3. The workflow builds and runs `npm publish` without a long-lived token.
+1. Actions → **Publish npm** → **Run workflow**
+2. Choose bump: `patch` / `minor` / `major`
+3. The job will:
+   - bump `package.json` (`npm version`)
+   - build
+   - `npm publish --access public --provenance`
+   - push the release commit and `vX.Y.Z` tag to `main`
 
-### Option B — `NPM_TOKEN` secret
+### Or publish an existing tag
 
-1. Create an npm automation token.
-2. Add repository secret `NPM_TOKEN`.
-3. The publish workflow uses `NODE_AUTH_TOKEN`.
+```bash
+npm version patch   # locally, if you prefer
+git push && git push --tags
+```
+
+Tag shape must be `v` + `package.json` version (example: `v0.3.1`).
+
+## Local publish (manual)
+
+```bash
+npm version patch   # or minor / major
+npm run build
+npm pack --dry-run
+npm publish --access public
+git push && git push --tags
+```
 
 ## What gets published
 
-Controlled by `package.json` → `files` and `.npmignore`.
+Controlled by `package.json` → `files`.
 
-Do **not** publish:
-
-- `fixtures/`
-- local `.nuxt` / `.data`
-- internal planning notes
+Do **not** publish fixtures, `.nuxt`, or planning notes.
 
 ## Verify after publish
 

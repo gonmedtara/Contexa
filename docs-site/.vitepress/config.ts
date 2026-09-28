@@ -3,6 +3,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Contexa',
   description: 'Browse, lint, and edit AI context files from a local web UI',
+  // Project Pages URL: https://gonmedtara.github.io/Contexa/
+  base: '/Contexa/',
   cleanUrls: true,
   themeConfig: {
     // Text wordmark for now; set `logo: '/logo.svg'` when the final mark is ready.

@@ -1,6 +1,21 @@
 # Publishing to npm
 
-See also the repo file [`docs/publishing.md`](https://github.com/) (mirrored below).
+## One-time GitHub / npm setup
+
+You need **either**:
+
+1. **Repo secret `NPM_TOKEN`** — npm automation/granular token with publish rights, or
+2. **Trusted Publisher** on npmjs.com for workflow `publish.yml` (repo `gonmedtara/Contexa`)
+
+Also set **Settings → Actions → Workflow permissions → Read and write** so the bump step can push the version commit and tag.
+
+Full detail: see repo [`docs/publishing.md`](https://github.com/gonmedtara/Contexa/blob/main/docs/publishing.md).
+
+## Publish from GitHub Actions
+
+1. Actions → **Publish npm** → **Run workflow**
+2. Pick `patch` / `minor` / `major`
+3. Workflow bumps version, publishes to npm, pushes commit + `vX.Y.Z` tag
 
 ## Manual
 
@@ -12,19 +27,7 @@ npm publish --access public
 git push && git push --tags
 ```
 
-## GitHub Actions
-
-Workflow: `.github/workflows/publish.yml`
-
-- Triggers on tags `v*` / GitHub Release / manual dispatch
-- Builds then `npm publish --access public --provenance`
-
-### Auth options
-
-1. **Trusted Publishing (OIDC)** — configure on npmjs.com (preferred, no long-lived token)
-2. **`NPM_TOKEN`** repository secret — automation token fallback
-
-## Smoke test after publish
+## Smoke test
 
 ```bash
 mkdir /tmp/contexa-smoke && cd /tmp/contexa-smoke
