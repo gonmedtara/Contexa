@@ -16,19 +16,30 @@ npm now rejects classic / weak tokens with:
 
 `403 … Two-factor authentication or granular access token with bypass 2fa enabled is required`
 
-Create a token that **bypasses 2FA**:
+Create a token that **bypasses 2FA** (required for the first publish of a new name like `contexai`):
 
-1. https://www.npmjs.com/settings/~/tokens → **Generate New Token**
-2. Prefer one of:
-   - **Automation** (classic CI token — bypasses 2FA by design), or
-   - **Granular Access Token** with:
-     - Permission: **Read and write** on package `contexai` (or all packages)
-     - **Bypass two-factor authentication** enabled
-     - Expiration: as you like
-3. GitHub → **Settings → Secrets and variables → Actions**
-4. Set secret `NPM_TOKEN` to the new value (replace the old token if you already had one)
+1. Enable **2FA** on your npm account if it is not already on  
+   https://www.npmjs.com/settings/~/account
+2. https://www.npmjs.com/settings/~/tokens → **Generate New Token** → **Granular Access Token**
+3. Settings that matter:
+   - **Packages**: **All packages** (a token limited to `contexai` can fail while the package does not exist yet)
+   - **Permissions**: **Read and write** that can **publish** (not “stage only”)
+   - **Bypass two-factor authentication**: **must be checked at creation** (cannot flip later)
+4. Copy the token (`npm_…`)
+5. GitHub → **Settings → Secrets and variables → Actions** → edit `NPM_TOKEN` → paste the **new** value (delete/recreate the secret if unsure)
+6. Re-run **Publish npm**
 
-Then re-run **Publish npm**.
+**Do not** use a classic “Publish” token. Prefer granular + Bypass 2FA (or classic **Automation** if your account still offers it).
+
+### Alternative — first publish from your machine
+
+```bash
+npm login
+npm run build
+npm publish --access public
+```
+
+Enter the 2FA code when prompted. That creates `contexai` on npm. Then set Trusted Publisher (Option B) and you can remove `NPM_TOKEN` from GitHub.
 
 ### Option B — npm Trusted Publishing (OIDC, no long-lived token)
 
