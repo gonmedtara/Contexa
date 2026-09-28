@@ -5,11 +5,11 @@
 You need **either**:
 
 1. **Repo secret `NPM_TOKEN`** — npm automation/granular token with publish rights, or
-2. **Trusted Publisher** on npmjs.com for workflow `publish.yml` (repo `gonmedtara/Contexa`)
+2. **Trusted Publisher** on npmjs.com for workflow `publish.yml` (repo `gonmedtara/Contexai`)
 
 Also set **Settings → Actions → Workflow permissions → Read and write** so the bump step can push the version commit and tag.
 
-Full detail: see repo [`docs/publishing.md`](https://github.com/gonmedtara/Contexa/blob/main/docs/publishing.md).
+Full detail: see repo [`docs/publishing.md`](https://github.com/gonmedtara/Contexai/blob/main/docs/publishing.md).
 
 ## Publish from GitHub Actions
 

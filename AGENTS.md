@@ -27,7 +27,7 @@ npx contexai
 
 ## Docs & release
 
-- Live docs: https://gonmedtara.github.io/Contexa/
+- Live docs: https://gonmedtara.github.io/Contexai/
 - Library docs sources: `docs-site/` (VitePress)
 - Brand tokens (app + docs): `brand/tokens.css`
 - Publish guide: `docs/publishing.md`

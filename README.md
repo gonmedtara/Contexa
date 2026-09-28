@@ -22,7 +22,7 @@ npx contexai /path/to/repo
 
 ## Documentation
 
-**Live docs:** [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
+**Live docs:** [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)
 
 Local preview: `npm run docs:dev` (sources in `docs-site/`).
 

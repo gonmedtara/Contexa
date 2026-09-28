@@ -5,7 +5,7 @@ Built with **[VitePress](https://vitepress.dev/)**.
 ## Local
 
 ```bash
-npm run docs:dev      # http://localhost:5173/Contexa/
+npm run docs:dev      # http://localhost:5173/Contexai/
 npm run docs:build    # docs-site/.vitepress/dist
 npm run docs:preview
 ```
@@ -14,16 +14,16 @@ npm run docs:preview
 
 The deploy job fails with **404 / Not Found** until Pages is enabled for Actions:
 
-1. Open [Settings → Pages](https://github.com/gonmedtara/Contexa/settings/pages)
+1. Open [Settings → Pages](https://github.com/gonmedtara/Contexai/settings/pages)
 2. **Build and deployment → Source:** **GitHub Actions** (not “Deploy from a branch”)
 3. Save — GitHub creates the `github-pages` environment on first deploy
 4. Re-run the **Docs** workflow (Actions → Docs → Re-run), or push a docs change
 
-**Live site:** [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
+**Live site:** [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)
 
-(`base: '/Contexa/'` is set in `docs-site/.vitepress/config.ts` for project Pages.)
+(`base: '/Contexai/'` is set in `docs-site/.vitepress/config.ts` for project Pages.)
 
-Brand colors are shared with the app via [`brand/tokens.css`](https://github.com/gonmedtara/Contexa/blob/main/brand/tokens.css).
+Brand colors are shared with the app via [`brand/tokens.css`](https://github.com/gonmedtara/Contexai/blob/main/brand/tokens.css).
 
 ## Workflow
 
@@ -33,4 +33,4 @@ Brand colors are shared with the app via [`brand/tokens.css`](https://github.com
 
 Upload `docs-site/.vitepress/dist` to Cloudflare Pages, Netlify, Vercel, etc.
 
-If you serve from the domain root instead of `/Contexa/`, change `base` to `'/'` in the VitePress config.
+If you serve from the domain root instead of `/Contexai/`, change `base` to `'/'` in the VitePress config.

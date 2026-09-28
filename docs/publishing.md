@@ -22,7 +22,7 @@ The publish workflow needs npm credentials. Pick **one**:
 1. Publish the package at least once with Option A, **or** create it on npm first
 2. npmjs.com → package `contexai` → **Settings → Trusted Publisher → GitHub Actions**
    - Organization or user: `gonmedtara`
-   - Repository: `Contexa`
+   - Repository: `Contexai`
    - Workflow filename: `publish.yml`
    - Environment: leave empty (this workflow does not use an environment)
 3. You can remove `NPM_TOKEN` afterward if you want OIDC-only

@@ -3,8 +3,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Contexai',
   description: 'Browse, lint, and edit AI context files from a local web UI',
-  // Project Pages URL: https://gonmedtara.github.io/Contexa/
-  base: '/Contexa/',
+  // Project Pages URL: https://gonmedtara.github.io/Contexai/
+  base: '/Contexai/',
   cleanUrls: true,
   // Match the app UI (light-only brand tokens).
   appearance: false,

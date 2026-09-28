@@ -35,7 +35,7 @@ npx contexai /path/to/repo
 
 ## Docs site
 
-Live documentation: [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
+Live documentation: [https://gonmedtara.github.io/Contexai/](https://gonmedtara.github.io/Contexai/)
 
 ## Next
 
