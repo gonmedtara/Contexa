@@ -27,6 +27,8 @@ npx contexa
 
 ## Docs & release
 
-- Library docs: `docs-site/` (VitePress)
+- Live docs: https://gonmedtara.github.io/Contexa/
+- Library docs sources: `docs-site/` (VitePress)
+- Brand tokens (app + docs): `brand/tokens.css`
 - Publish guide: `docs/publishing.md`
 - Config reference: `docs/configuration.md`

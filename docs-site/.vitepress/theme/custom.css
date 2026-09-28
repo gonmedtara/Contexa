@@ -1,0 +1,89 @@
+@import "../../../brand/tokens.css";
+
+:root {
+  --vp-c-brand-1: var(--cx-accent);
+  --vp-c-brand-2: var(--cx-accent-hover);
+  --vp-c-brand-3: var(--cx-accent-bright);
+  --vp-c-brand-soft: var(--cx-accent-soft);
+
+  --vp-c-bg: var(--cx-bg);
+  --vp-c-bg-alt: var(--cx-bg-warm);
+  --vp-c-bg-elv: var(--cx-surface);
+  --vp-c-bg-soft: var(--cx-accent-soft);
+
+  --vp-c-text-1: var(--cx-text);
+  --vp-c-text-2: var(--cx-muted);
+  --vp-c-text-3: var(--cx-muted);
+
+  --vp-c-border: var(--cx-border);
+  --vp-c-divider: var(--cx-border);
+  --vp-c-gutter: var(--cx-border);
+
+  --vp-c-indigo-1: var(--cx-accent);
+  --vp-c-indigo-2: var(--cx-accent-hover);
+  --vp-c-indigo-3: var(--cx-accent-bright);
+  --vp-c-indigo-soft: var(--cx-accent-soft);
+
+  --vp-button-brand-border: var(--cx-accent);
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: var(--cx-accent);
+  --vp-button-brand-hover-border: var(--cx-accent-hover);
+  --vp-button-brand-hover-bg: var(--cx-accent-hover);
+  --vp-button-brand-active-border: var(--cx-accent-hover);
+  --vp-button-brand-active-bg: var(--cx-accent-hover);
+
+  --vp-button-alt-border: var(--cx-border);
+  --vp-button-alt-text: var(--cx-text);
+  --vp-button-alt-bg: var(--cx-surface);
+  --vp-button-alt-hover-border: var(--cx-border);
+  --vp-button-alt-hover-bg: var(--cx-bg-warm);
+
+  --vp-code-color: var(--cx-text);
+  --vp-code-bg: var(--cx-code-bg);
+  --vp-code-block-bg: var(--cx-code-block-bg);
+  --vp-code-block-color: var(--cx-code-block-fg);
+
+  --vp-font-family-base: var(--cx-font);
+  --vp-font-family-mono: var(--cx-mono);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    var(--cx-accent) 30%,
+    var(--cx-accent-bright)
+  );
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    var(--cx-bg-mint) 50%,
+    var(--cx-accent-soft) 50%
+  );
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+html {
+  background: var(--cx-bg);
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 0% 0%, var(--cx-bg-warm) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, var(--cx-bg-mint) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+.VPNavBar,
+.VPNavBar .content-body,
+.VPLocalNav,
+.VPSidebar {
+  background-color: color-mix(in srgb, var(--cx-surface) 92%, transparent) !important;
+}
+
+.VPFeature {
+  background-color: var(--cx-surface) !important;
+  border-color: var(--cx-border) !important;
+}
+
+.VPLink.active .link-text,
+.VPSidebarItem.is-active > .item .link > .text {
+  color: var(--cx-accent) !important;
+}

@@ -33,7 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Need full history + ability to push the release commit/tag.
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -54,7 +53,10 @@ jobs:
 
       - name: Bump version
         if: github.event_name == 'workflow_dispatch'
-        run: npm version "${{ inputs.bump }}" -m "chore: release %s"
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          npm version "$BUMP" -m "chore: release %s"
 
       - name: Resolve version
         id: version
@@ -82,7 +84,7 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           if npm view "contexa@${VERSION}" version >/dev/null 2>&1; then
             echo "already=true" >> "$GITHUB_OUTPUT"
-            echo "contexa@${VERSION} is already on npm — nothing to publish."
+            echo "contexa@${VERSION} is already on npm - nothing to publish."
           else
             echo "already=false" >> "$GITHUB_OUTPUT"
           fi
@@ -96,11 +98,10 @@ jobs:
           if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
             echo "Using repository secret NPM_TOKEN"
           else
-            echo "NPM_TOKEN is not set — using npm Trusted Publishing (OIDC)"
+            echo "NPM_TOKEN is not set - using npm Trusted Publishing (OIDC)"
             echo "If this fails with ENEEDAUTH, either:"
             echo "  1) Add repo secret NPM_TOKEN (npm automation token), or"
             echo "  2) Configure Trusted Publisher on npmjs.com for workflow publish.yml"
-            # setup-node writes an empty _authToken; that blocks OIDC. Remove it.
             unset NODE_AUTH_TOKEN
             for rc in "$HOME/.npmrc" .npmrc; do
               if [ -f "$rc" ]; then

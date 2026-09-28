@@ -22,9 +22,11 @@ npx contexa /path/to/repo
 
 ## Documentation
 
-Full docs (CLI options, config files, publishing): see the [docs site](./docs-site/) (`npm run docs:dev`).
+**Live docs:** [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
 
-Quick links in this repo:
+Local preview: `npm run docs:dev` (sources in `docs-site/`).
+
+Also in this repo:
 
 - [Publishing to npm](./docs/publishing.md)
 - [Configuration reference](./docs/configuration.md)
@@ -37,6 +39,8 @@ npm run dev:sample
 npm run build
 npm start -- ./fixtures/sample-repo
 ```
+
+Brand colors live in [`brand/tokens.css`](./brand/tokens.css) (shared by the app and the docs site).
 
 ## Stack
 

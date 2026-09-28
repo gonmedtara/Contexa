@@ -1,0 +1,28 @@
+/* Contexa brand tokens — shared by the app UI and VitePress docs.
+   Edit here first; consumers import this file. */
+
+:root {
+  --cx-bg: #f6f5f2;
+  --cx-bg-warm: #ebe7df;
+  --cx-bg-mint: #e8efe9;
+  --cx-surface: #ffffff;
+  --cx-border: #ddd8cf;
+  --cx-text: #1c1b19;
+  --cx-muted: #6b6560;
+  --cx-accent: #0f5c4c;
+  --cx-accent-hover: #0c4a3d;
+  --cx-accent-bright: #14806a;
+  --cx-accent-soft: #e4f1ed;
+  --cx-danger: #8a3b2c;
+  --cx-danger-soft: #f7ebe8;
+  --cx-warning: #8a6a1c;
+  --cx-warning-text: #6a5214;
+  --cx-code-bg: #eceae4;
+  --cx-code-block-bg: #1e1f22;
+  --cx-code-block-fg: #e8eaed;
+  --cx-code-block-border: #2c2e33;
+  --cx-radius: 8px;
+  --cx-font: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --cx-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+  --cx-sidebar: 280px;
+}

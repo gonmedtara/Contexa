@@ -6,6 +6,17 @@ export default defineConfig({
   // Project Pages URL: https://gonmedtara.github.io/Contexa/
   base: '/Contexa/',
   cleanUrls: true,
+  // Match the app UI (light-only brand tokens).
+  appearance: false,
+  head: [
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap',
+      },
+    ],
+  ],
   themeConfig: {
     // Text wordmark for now; set `logo: '/logo.svg'` when the final mark is ready.
     siteTitle: 'Contexa',

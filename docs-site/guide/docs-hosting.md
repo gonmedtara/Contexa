@@ -19,11 +19,11 @@ The deploy job fails with **404 / Not Found** until Pages is enabled for Actions
 3. Save — GitHub creates the `github-pages` environment on first deploy
 4. Re-run the **Docs** workflow (Actions → Docs → Re-run), or push a docs change
 
-Site URL after deploy:
-
-`https://gonmedtara.github.io/Contexa/`
+**Live site:** [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
 
 (`base: '/Contexa/'` is set in `docs-site/.vitepress/config.ts` for project Pages.)
+
+Brand colors are shared with the app via [`brand/tokens.css`](https://github.com/gonmedtara/Contexa/blob/main/brand/tokens.css).
 
 ## Workflow
 

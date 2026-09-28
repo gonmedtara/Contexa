@@ -33,6 +33,10 @@ npx contexa /path/to/repo
 - `.windsurfrules`
 - `**/SKILL.md`
 
+## Docs site
+
+Live documentation: [https://gonmedtara.github.io/Contexa/](https://gonmedtara.github.io/Contexa/)
+
 ## Next
 
 - [CLI reference](./cli)
