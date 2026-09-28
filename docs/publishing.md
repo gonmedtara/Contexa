@@ -20,36 +20,34 @@ Confirm: https://www.npmjs.com/package/contexai — then configure CI (below).
 
 ## CI after the package exists
 
-### Trusted Publishing (recommended, no long-lived token)
+### Trusted Publishing (required for GitHub Actions)
 
-1. npmjs.com → **contexai** → **Settings → Trusted Publisher → GitHub Actions**
-   - Organization or user: `gonmedtara`
-   - Repository: `Contexai`
-   - Workflow filename: `publish.yml`
-   - Environment: leave empty (must match the workflow — ours has none)
-   - Allowed actions: include `npm publish`
-2. Delete the GitHub secret `NPM_TOKEN` if present (a bad token forces token auth and breaks OIDC)
-3. GitHub → **Settings → Actions → General → Workflow permissions → Read and write**
-4. Actions → **Publish npm** → Run workflow (`patch` / `minor` / `major`)
+1. Open https://www.npmjs.com/package/contexai → **Settings → Trusted Publisher → GitHub Actions**
+2. Create a connection with **exactly**:
 
-**If CI fails with `404 Not Found - PUT …/contexai` while the package already exists:** Trusted Publishing needs **npm ≥ 11.5.1**. Older CLIs (e.g. npm 10 on Node 22) produce that misleading 404 even when OIDC + provenance look fine. The publish workflow pins Node 24 and upgrades npm.
+   | Field | Value |
+   |-------|--------|
+   | Organization or user | `gonmedtara` |
+   | Repository | `Contexai` (capital **C** — case-sensitive) |
+   | Workflow filename | `publish.yml` |
+   | Environment | leave **empty** |
+   | Allowed actions | include **`npm publish`** |
 
-### Fallback — `NPM_TOKEN` secret
+3. **Critical (since 3 Sep 2026):** new Trusted Publishers default to **`npm stage publish` only**. If you leave the default, `npm publish` from CI fails with a misleading **`404 … or you do not have permission`**. You must explicitly allow **`npm publish`**, or delete the connection and recreate it with that option checked.
+4. Connections **cannot be edited** — delete and recreate if any field is wrong.
+5. Do **not** set a GitHub `NPM_TOKEN` secret (none needed; a bad token interferes).
+6. GitHub → **Settings → Actions → General → Workflow permissions → Read and write**
+7. Actions → **Publish npm** → Run workflow (`patch` / `minor` / `major`)
 
-Only if Trusted Publishing is not set up yet:
+### If CI fails with `404 Not Found - PUT …/contexai`
 
-1. Granular Access Token with **All packages**, **Read and write (publish)**, **Bypass 2FA** checked at creation  
-   https://www.npmjs.com/settings/~/tokens
-2. GitHub secret `NPM_TOKEN` = that token
+While provenance is signed but PUT returns 404 / “do not have permission”, the Trusted Publisher on npmjs.com does not match this workflow. Check the table above (especially **Repository case** and **Allowed actions → npm publish**).
 
-Classic “Publish” tokens will keep failing with `403 … bypass 2fa`.
-
-## Local publish (manual releases)
+### Fallback — local publish
 
 ```bash
 npm version patch   # or minor / major
 npm run build
-npm pack --dry-run
 npm publish --access public
 git push && git push --tags
 ```
