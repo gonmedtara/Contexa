@@ -37,34 +37,35 @@ pre {
   font-family: var(--cx-mono);
 }
 
-/* Nuxt Content prose inside sections */
-.cx-prose :deep(p) {
+/* Prose inside section bodies (global CSS — do not use Vue :deep() here). */
+.cx-prose p {
   margin: 0 0 0.75rem;
 }
 
-.cx-prose :deep(p:last-child) {
+.cx-prose p:last-child {
   margin-bottom: 0;
 }
 
-.cx-prose :deep(ul),
-.cx-prose :deep(ol) {
+.cx-prose ul,
+.cx-prose ol {
   margin: 0 0 0.75rem;
   padding-left: 1.25rem;
 }
 
-.cx-prose :deep(h3),
-.cx-prose :deep(h4) {
+.cx-prose h3,
+.cx-prose h4 {
   margin: 1rem 0 0.5rem;
   font-size: 0.95rem;
 }
 
-.cx-prose :deep(pre),
-.cx-prose :deep(pre.shiki) {
+.cx-prose pre,
+.cx-prose pre.shiki,
+.cx-prose .shiki {
   margin: 0.85rem 0;
   padding: 0.85rem 1rem;
   overflow: auto;
   background: var(--cx-code-block-bg) !important;
-  color: var(--cx-code-block-fg);
+  color: var(--cx-code-block-fg) !important;
   border-radius: var(--cx-radius);
   font-size: 0.82rem;
   line-height: 1.5;
@@ -72,8 +73,9 @@ pre {
   border: 1px solid var(--cx-code-block-border);
 }
 
-.cx-prose :deep(pre code),
-.cx-prose :deep(pre.shiki code) {
+.cx-prose pre code,
+.cx-prose pre.shiki code,
+.cx-prose .shiki code {
   display: block;
   padding: 0;
   background: transparent !important;
@@ -83,7 +85,7 @@ pre {
   white-space: inherit;
 }
 
-.cx-prose :deep(:not(pre) > code) {
+.cx-prose :not(pre) > code {
   font-size: 0.88em;
   padding: 0.12em 0.35em;
   border-radius: 4px;
@@ -93,8 +95,8 @@ pre {
 }
 
 /* Avoid accidental strikethrough on flags like --save-dev outside fences */
-.cx-prose :deep(del),
-.cx-prose :deep(s) {
+.cx-prose del,
+.cx-prose s {
   text-decoration: none;
   color: inherit;
 }

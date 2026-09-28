@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          theme: 'github-light',
+          // Dark tokens to match --cx-code-block-bg in brand/tokens.css
+          theme: 'github-dark',
           langs: ['bash', 'shell', 'ts', 'js', 'json', 'yaml', 'md', 'vue', 'html'],
         },
       },

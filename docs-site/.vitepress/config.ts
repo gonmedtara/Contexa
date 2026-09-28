@@ -8,6 +8,10 @@ export default defineConfig({
   cleanUrls: true,
   // Match the app UI (light-only brand tokens).
   appearance: false,
+  markdown: {
+    // Dark token colors on the dark code pane (--vp-code-block-bg).
+    theme: 'github-dark',
+  },
   head: [
     [
       'link',

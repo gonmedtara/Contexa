@@ -42,6 +42,8 @@
   --vp-code-bg: var(--cx-code-bg);
   --vp-code-block-bg: var(--cx-code-block-bg);
   --vp-code-block-color: var(--cx-code-block-fg);
+  --vp-code-copy-code-bg: color-mix(in srgb, var(--cx-code-block-bg) 80%, #fff);
+  --vp-code-copy-code-hover-bg: color-mix(in srgb, var(--cx-code-block-bg) 65%, #fff);
 
   --vp-font-family-base: var(--cx-font);
   --vp-font-family-mono: var(--cx-mono);
@@ -86,4 +88,15 @@ body {
 .VPLink.active .link-text,
 .VPSidebarItem.is-active > .item .link > .text {
   color: var(--cx-accent) !important;
+}
+
+/* Readable command text on dark fenced blocks */
+.vp-doc div[class*='language-'] {
+  background: var(--cx-code-block-bg) !important;
+  border: 1px solid var(--cx-code-block-border);
+  color: var(--cx-code-block-fg);
+}
+
+.vp-doc div[class*='language-'] code {
+  color: var(--cx-code-block-fg);
 }
