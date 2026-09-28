@@ -1,6 +1,10 @@
-# Contexai
+<p align="center">
+  <img src="brand/icon.png" alt="Contexai" width="96" height="96">
+</p>
 
-Browse, lint, and edit AI context files in a repository via a local web UI.
+<h1 align="center">Contexai</h1>
+
+<p align="center">Browse, lint, and edit AI context files in a repository via a local web UI.</p>
 
 ```bash
 npm install --save-dev contexai
@@ -40,7 +44,7 @@ npm run build
 npm start -- ./fixtures/sample-repo
 ```
 
-Brand colors live in [`brand/tokens.css`](./brand/tokens.css) (shared by the app and the docs site).
+Brand assets: [`brand/icon.png`](./brand/icon.png) · colors in [`brand/tokens.css`](./brand/tokens.css).
 
 ## Stack
 
