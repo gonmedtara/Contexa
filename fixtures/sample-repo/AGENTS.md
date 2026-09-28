@@ -21,8 +21,8 @@ Nested detail under a section stays grouped with its parent heading.
 Install example:
 
 ```bash
-npm install --save-dev contexa
-npx contexa
+npm install --save-dev contexai
+npx contexai
 ```
 
 ### Tone

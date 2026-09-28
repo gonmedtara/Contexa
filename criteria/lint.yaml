@@ -1,5 +1,5 @@
-# Lint criteria for Contexa
-# Host projects may override by placing `.contexa/lint.yaml` at the scanned root.
+# Lint criteria for Contexai
+# Host projects may override by placing `.contexai/lint.yaml` at the scanned root.
 #
 # Normative modality language is grounded in:
 # - RFC 2119: https://www.rfc-editor.org/rfc/rfc2119

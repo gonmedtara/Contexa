@@ -3,13 +3,13 @@
 ## Install in a project
 
 ```bash
-npm install --save-dev contexa
+npm install --save-dev contexai
 ```
 
 ## Run
 
 ```bash
-npx contexa
+npx contexai
 ```
 
 This:
@@ -21,7 +21,7 @@ This:
 Point at another folder:
 
 ```bash
-npx contexa /path/to/repo
+npx contexai /path/to/repo
 ```
 
 ## Detected files

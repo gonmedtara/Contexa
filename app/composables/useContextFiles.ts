@@ -1,10 +1,10 @@
 import type { ParsedContextFile, ParseScanResult } from '../../shared/types/context'
 
 export function useContextFiles() {
-  const selectedPath = useState<string | null>('contexa-selected-path', () => null)
+  const selectedPath = useState<string | null>('contexai-selected-path', () => null)
 
   const { data, pending, error, refresh } = useAsyncData(
-    'contexa-context',
+    'contexai-context',
     () => $fetch<ParseScanResult>('/api/context', {
       query: { _: Date.now() },
     }),

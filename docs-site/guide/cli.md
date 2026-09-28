@@ -1,9 +1,9 @@
 # CLI reference
 
 ```bash
-npx contexa [path] [flags]
-npx contexa start [path] [flags]
-npx contexa dev [path] [flags]    # contributors / package source
+npx contexai [path] [flags]
+npx contexai start [path] [flags]
+npx contexai dev [path] [flags]    # contributors / package source
 ```
 
 ## Arguments
@@ -24,14 +24,14 @@ npx contexa dev [path] [flags]    # contributors / package source
 
 | Variable | Description |
 |----------|-------------|
-| `CONTEXA_REPO` | Folder to scan (set by the CLI) |
+| `CONTEXAI_REPO` | Folder to scan (set by the CLI) |
 | `PORT` / `NITRO_PORT` | Same as `--port` |
 | `HOST` / `NITRO_HOST` | Same as `--host` |
 
 ## Examples
 
 ```bash
-npx contexa
-npx contexa ./apps/web --port 4000
-npx contexa /tmp/demo --no-open
+npx contexai
+npx contexai ./apps/web --port 4000
+npx contexai /tmp/demo --no-open
 ```

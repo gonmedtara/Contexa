@@ -1,23 +1,23 @@
-# Contexa
+# Contexai
 
 Browse, lint, and edit AI context files in a repository via a local web UI.
 
 ```bash
-npm install --save-dev contexa
-npx contexa
+npm install --save-dev contexai
+npx contexai
 ```
 
 Optional path:
 
 ```bash
-npx contexa /path/to/repo
+npx contexai /path/to/repo
 ```
 
 ## What it does
 
 - Discovers AI context files (`AGENTS.md`, `CLAUDE.md`, Copilot instructions, IDE rules, `.windsurfrules`, `SKILL.md`, …)
 - Shows them in a file tree
-- Lints with externalized criteria (`criteria/lint.yaml`, overridable via `.contexa/lint.yaml`)
+- Lints with externalized criteria (`criteria/lint.yaml`, overridable via `.contexai/lint.yaml`)
 - Edit mode with reusable tags (frontmatter, MUST/SHOULD, XML blocks) + diff + save
 
 ## Documentation

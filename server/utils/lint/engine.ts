@@ -45,7 +45,7 @@ export async function lintParsedFiles(
     if (rule.enabled === false) continue
     const runner = runners[rule.id]
     if (!runner) {
-      console.warn(`[contexa] No runner for lint rule id « ${rule.id} » — skipped`)
+      console.warn(`[contexai] No runner for lint rule id « ${rule.id} » — skipped`)
       continue
     }
     issues.push(...await runner(ctx))

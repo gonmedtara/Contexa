@@ -1,10 +1,10 @@
-# Contexa — contributor notes
+# Contexai — contributor notes
 
 Visual tool for AI context files. Install as an npm dependency, run the CLI, open the local UI.
 
 ```bash
-npm install --save-dev contexa
-npx contexa
+npm install --save-dev contexai
+npx contexai
 ```
 
 ## Targeted files
@@ -20,7 +20,7 @@ npx contexa
 
 ## Principles
 
-- Prefer external criteria / templates (`criteria/*.yaml`, host `.contexa/*`) over frozen in-code lists.
+- Prefer external criteria / templates (`criteria/*.yaml`, host `.contexai/*`) over frozen in-code lists.
 - Zero required user config at launch.
 - Logo slot: replace `public/logo.svg` when ready.
 - Lint modality language is grounded in RFC 2119 / RFC 8174 (BCP 14).

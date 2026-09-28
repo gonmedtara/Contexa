@@ -34,7 +34,7 @@ const saveOk = ref<string | null>(null)
 /** Bumps after reload so sections/lint remount with fresh data. */
 const viewEpoch = ref(0)
 
-const { data: tagsPayload } = await useAsyncData('contexa-edit-tags', () =>
+const { data: tagsPayload } = await useAsyncData('contexai-edit-tags', () =>
   $fetch<{ tags: EditTagDefinition[] }>('/api/edit/tags'),
 )
 
@@ -151,7 +151,7 @@ function insertTag(tag: EditTagDefinition) {
   }
 
   const text = snippet.endsWith('\n') ? snippet : `${snippet}\n`
-  const el = document.getElementById('contexa-editor') as HTMLTextAreaElement | null
+  const el = document.getElementById('contexai-editor') as HTMLTextAreaElement | null
   if (!el) {
     draft.value += text
     return
@@ -321,7 +321,7 @@ function buildUnifiedDiff(before: string, after: string): string[] {
           </div>
 
           <textarea
-            id="contexa-editor"
+            id="contexai-editor"
             v-model="draft"
             class="editor"
             spellcheck="false"

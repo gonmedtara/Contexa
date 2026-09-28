@@ -1,8 +1,8 @@
-# Publishing Contexa to npm
+# Publishing Contexai to npm
 
 ## Prerequisites
 
-- npm account with permission to publish the `contexa` package
+- npm account with permission to publish the `contexai` package
 - Node.js 20+
 - One of the auth options below configured
 
@@ -13,14 +13,14 @@ The publish workflow needs npm credentials. Pick **one**:
 ### Option A — `NPM_TOKEN` secret (simplest)
 
 1. npmjs.com → Access Tokens → **Granular Access Token** or **Automation**
-   - Permission: Read and write for package `contexa` (or publish for your user)
+   - Permission: Read and write for package `contexai` (or publish for your user)
 2. GitHub repo → **Settings → Secrets and variables → Actions**
 3. New secret name: `NPM_TOKEN`, value: the token
 
 ### Option B — npm Trusted Publishing (OIDC, no long-lived token)
 
 1. Publish the package at least once with Option A, **or** create it on npm first
-2. npmjs.com → package `contexa` → **Settings → Trusted Publisher → GitHub Actions**
+2. npmjs.com → package `contexai` → **Settings → Trusted Publisher → GitHub Actions**
    - Organization or user: `gonmedtara`
    - Repository: `Contexa`
    - Workflow filename: `publish.yml`
@@ -73,8 +73,8 @@ Do **not** publish fixtures, `.nuxt`, or planning notes.
 ## Verify after publish
 
 ```bash
-mkdir /tmp/contexa-smoke && cd /tmp/contexa-smoke
+mkdir /tmp/contexai-smoke && cd /tmp/contexai-smoke
 npm init -y
-npm install contexa
-npx contexa --no-open
+npm install contexai
+npx contexai --no-open
 ```

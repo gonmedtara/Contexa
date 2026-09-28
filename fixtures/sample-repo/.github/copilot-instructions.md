@@ -1,5 +1,5 @@
 ---
-description: Sample GitHub Copilot repository instructions for Contexa demos
+description: Sample GitHub Copilot repository instructions for Contexai demos
 ---
 
 # Copilot instructions

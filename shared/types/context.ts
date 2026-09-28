@@ -1,5 +1,5 @@
 /**
- * Shared types for Contexa Phase 1 (scan + parse + read-only UI).
+ * Shared types for Contexai Phase 1 (scan + parse + read-only UI).
  * Kept free of write/lint concerns so later phases can extend without breaking callers.
  */
 

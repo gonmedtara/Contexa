@@ -30,8 +30,8 @@ git push && git push --tags
 ## Smoke test
 
 ```bash
-mkdir /tmp/contexa-smoke && cd /tmp/contexa-smoke
+mkdir /tmp/contexai-smoke && cd /tmp/contexai-smoke
 npm init -y
-npm install contexa
-npx contexa --no-open
+npm install contexai
+npx contexai --no-open
 ```

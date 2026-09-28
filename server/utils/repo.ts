@@ -7,12 +7,12 @@ import { resolve } from 'node:path'
  */
 export function resolveRepoPath(explicit?: string): string {
   const config = useRuntimeConfig()
-  const fromConfig = (config.contexa as { repoPath?: string } | undefined)?.repoPath
+  const fromConfig = (config.contexai as { repoPath?: string } | undefined)?.repoPath
 
   const candidate =
     explicit?.trim()
-    || process.env.CONTEXA_REPO?.trim()
-    || process.env.NUXT_CONTEXA_REPO_PATH?.trim()
+    || process.env.CONTEXAI_REPO?.trim()
+    || process.env.NUXT_CONTEXAI_REPO_PATH?.trim()
     || (fromConfig && fromConfig.length > 0 ? fromConfig : '')
     || process.cwd()
 
@@ -21,7 +21,7 @@ export function resolveRepoPath(explicit?: string): string {
   if (!existsSync(absolute) || !statSync(absolute).isDirectory()) {
     throw createError({
       statusCode: 400,
-      statusMessage: `Contexa folder path is not a directory: ${absolute}`,
+      statusMessage: `Contexai folder path is not a directory: ${absolute}`,
     })
   }
 

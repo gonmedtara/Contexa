@@ -6,8 +6,8 @@ import { parse as parseYaml } from 'yaml'
 import type { EditTagsFile, LintCriteriaFile, LintRuleDefinition } from '../../shared/types/criteria'
 
 function findPackageRoot(): string {
-  if (process.env.CONTEXA_PACKAGE_ROOT && existsSync(join(process.env.CONTEXA_PACKAGE_ROOT, 'criteria/lint.yaml'))) {
-    return process.env.CONTEXA_PACKAGE_ROOT
+  if (process.env.CONTEXAI_PACKAGE_ROOT && existsSync(join(process.env.CONTEXAI_PACKAGE_ROOT, 'criteria/lint.yaml'))) {
+    return process.env.CONTEXAI_PACKAGE_ROOT
   }
 
   let dir = dirname(fileURLToPath(import.meta.url))
@@ -18,7 +18,7 @@ function findPackageRoot(): string {
     if (existsSync(pkgPath)) {
       try {
         const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as { name?: string }
-        if (pkg.name === 'contexa' && existsSync(criteriaPath)) return dir
+        if (pkg.name === 'contexai' && existsSync(criteriaPath)) return dir
       }
       catch {
         // continue walking
@@ -40,7 +40,7 @@ async function readYamlFile<T>(path: string): Promise<T | null> {
 }
 
 /**
- * Load lint criteria: package defaults, then host `.contexa/lint.yaml` override (merge by rule id).
+ * Load lint criteria: package defaults, then host `.contexai/lint.yaml` override (merge by rule id).
  */
 export async function loadLintCriteria(repoPath: string): Promise<{
   criteria: LintCriteriaFile
@@ -48,7 +48,7 @@ export async function loadLintCriteria(repoPath: string): Promise<{
 }> {
   const packageRoot = findPackageRoot()
   const defaultsPath = join(packageRoot, 'criteria/lint.yaml')
-  const hostPath = join(repoPath, '.contexa/lint.yaml')
+  const hostPath = join(repoPath, '.contexai/lint.yaml')
   const sources: string[] = []
 
   const defaults = (await readYamlFile<LintCriteriaFile>(defaultsPath)) ?? { rules: [] }
@@ -82,7 +82,7 @@ export async function loadEditTags(repoPath: string): Promise<{
 }> {
   const packageRoot = findPackageRoot()
   const defaultsPath = join(packageRoot, 'criteria/edit-tags.yaml')
-  const hostPath = join(repoPath, '.contexa/edit-tags.yaml')
+  const hostPath = join(repoPath, '.contexai/edit-tags.yaml')
   const sources: string[] = []
 
   const defaults = (await readYamlFile<EditTagsFile>(defaultsPath)) ?? { tags: [] }

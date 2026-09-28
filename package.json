@@ -1,10 +1,10 @@
 {
-  "name": "contexa",
+  "name": "contexai",
   "version": "0.3.0",
   "description": "Browse and lint AI context files in a repo via a local web UI",
   "type": "module",
   "bin": {
-    "contexa": "./bin/contexa.mjs"
+    "contexai": "./bin/contexai.mjs"
   },
   "files": [
     "bin",
@@ -23,12 +23,12 @@
     "AGENTS.md"
   ],
   "scripts": {
-    "dev": "node bin/contexa.mjs dev",
-    "dev:sample": "node bin/contexa.mjs dev ./fixtures/sample-repo",
+    "dev": "node bin/contexai.mjs dev",
+    "dev:sample": "node bin/contexai.mjs dev ./fixtures/sample-repo",
     "build": "nuxt build",
     "prepack": "nuxt build",
-    "start": "node bin/contexa.mjs start",
-    "start:sample": "node bin/contexa.mjs start ./fixtures/sample-repo",
+    "start": "node bin/contexai.mjs start",
+    "start:sample": "node bin/contexai.mjs start ./fixtures/sample-repo",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "prepare": "node ./scripts/prepare.mjs",

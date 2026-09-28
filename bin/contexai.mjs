@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Contexa CLI — installable npm bin.
+ * Contexai CLI — installable npm bin.
  *
  * Usage (in any folder / host repo):
- *   npx contexa                 # scan cwd, serve UI, open browser
- *   npx contexa ./path          # scan given folder
- *   npx contexa start ./path    # same (explicit)
- *   npx contexa dev ./path      # Nuxt dev (package source only)
+ *   npx contexai                 # scan cwd, serve UI, open browser
+ *   npx contexai ./path          # scan given folder
+ *   npx contexai start ./path    # same (explicit)
+ *   npx contexai dev ./path      # Nuxt dev (package source only)
  *
  * Flags:
  *   --port <n>     HTTP port (default 3927)
@@ -70,20 +70,20 @@ for (let i = 0; i < argv.length; i++) {
 }
 
 if (!repoPath) {
-  repoPath = process.env.CONTEXA_REPO
-    ? resolve(process.env.CONTEXA_REPO)
+  repoPath = process.env.CONTEXAI_REPO
+    ? resolve(process.env.CONTEXAI_REPO)
     : process.cwd()
 }
 
-process.env.CONTEXA_REPO = repoPath
-process.env.NUXT_CONTEXA_REPO_PATH = repoPath
-process.env.CONTEXA_PACKAGE_ROOT = packageRoot
+process.env.CONTEXAI_REPO = repoPath
+process.env.NUXT_CONTEXAI_REPO_PATH = repoPath
+process.env.CONTEXAI_PACKAGE_ROOT = packageRoot
 process.env.HOST = host
 process.env.PORT = String(port)
 process.env.NITRO_PORT = String(port)
 process.env.NITRO_HOST = host
 
-console.info(`[contexa] folder: ${repoPath}`)
+console.info(`[contexai] folder: ${repoPath}`)
 
 function openUrl(url) {
   const name = platform()
@@ -146,13 +146,13 @@ function runDevOrBuildLike() {
 async function runStart() {
   const serverEntry = join(packageRoot, '.output', 'server', 'index.mjs')
   if (!existsSync(serverEntry)) {
-    console.error('[contexa] Production build missing (.output). Run `npm run build` in the contexa package, or use `npx contexa dev`.')
+    console.error('[contexai] Production build missing (.output). Run `npm run build` in the contexai package, or use `npx contexai dev`.')
     process.exit(1)
   }
 
   const browseHost = host === '0.0.0.0' ? '127.0.0.1' : host
   const url = `http://${browseHost}:${port}/`
-  console.info(`[contexa] starting ${url}`)
+  console.info(`[contexai] starting ${url}`)
 
   const child = spawn(process.execPath, [serverEntry, ...passthrough], {
     cwd: packageRoot,
@@ -169,10 +169,10 @@ async function runStart() {
     try {
       await waitForPort(browseHost, port)
       openUrl(url)
-      console.info(`[contexa] opened ${url}`)
+      console.info(`[contexai] opened ${url}`)
     }
     catch (error) {
-      console.warn(`[contexa] could not open browser: ${error.message}`)
+      console.warn(`[contexai] could not open browser: ${error.message}`)
     }
   }
 }

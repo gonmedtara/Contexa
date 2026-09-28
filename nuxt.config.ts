@@ -18,8 +18,8 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    contexa: {
-      // Overridden at runtime by CONTEXA_REPO / NUXT_CONTEXA_REPO_PATH (CLI).
+    contexai: {
+      // Overridden at runtime by CONTEXAI_REPO / NUXT_CONTEXAI_REPO_PATH (CLI).
       // Keep empty at build time so a published package does not bake a host path.
       repoPath: '',
     },

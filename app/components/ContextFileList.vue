@@ -49,7 +49,7 @@ function toggleDir(path: string) {
   <aside class="sidebar">
     <header class="sidebar__header">
       <p class="sidebar__brand">
-        Contexa
+        Contexai
       </p>
       <p
         class="sidebar__repo"

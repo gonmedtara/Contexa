@@ -1,5 +1,5 @@
 # Edit-mode tag templates.
-# Host projects may override with `.contexa/edit-tags.yaml`.
+# Host projects may override with `.contexai/edit-tags.yaml`.
 #
 # Modality tags follow RFC 2119 / RFC 8174 (BCP 14).
 # XML-ish blocks follow common agent-prompt conventions.

@@ -1,22 +1,22 @@
 # Configuration
 
-Contexa works with zero config. Optional files and environment variables customize behavior.
+Contexai works with zero config. Optional files and environment variables customize behavior.
 
 ## Environment variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CONTEXA_REPO` | `process.cwd()` | Absolute folder to scan (set automatically by the CLI). |
-| `CONTEXA_PACKAGE_ROOT` | package install path | Where bundled `criteria/` lives (set by the CLI). |
+| `CONTEXAI_REPO` | `process.cwd()` | Absolute folder to scan (set automatically by the CLI). |
+| `CONTEXAI_PACKAGE_ROOT` | package install path | Where bundled `criteria/` lives (set by the CLI). |
 | `PORT` / `NITRO_PORT` | `3927` | HTTP port for the web UI. |
 | `HOST` / `NITRO_HOST` | `127.0.0.1` | Bind address. |
 
 ## CLI flags
 
 ```bash
-npx contexa [path] [--port 3927] [--host 127.0.0.1] [--no-open]
-npx contexa start [path] …
-npx contexa dev [path] …          # package source / contributors only
+npx contexai [path] [--port 3927] [--host 127.0.0.1] [--no-open]
+npx contexai start [path] …
+npx contexai dev [path] …          # package source / contributors only
 ```
 
 | Flag | Description |
@@ -28,9 +28,9 @@ npx contexa dev [path] …          # package source / contributors only
 
 ## Host override files
 
-Place these in the **scanned** folder (your project), not inside `node_modules/contexa`:
+Place these in the **scanned** folder (your project), not inside `node_modules/contexai`:
 
-### `.contexa/lint.yaml`
+### `.contexai/lint.yaml`
 
 Overrides / extends packaged lint criteria from `criteria/lint.yaml`.
 
@@ -48,7 +48,7 @@ rules:
 
 See packaged defaults: `criteria/lint.yaml` (RFC 2119 / RFC 8174 based).
 
-### `.contexa/edit-tags.yaml`
+### `.contexai/edit-tags.yaml`
 
 Overrides / extends edit-mode tag templates from `criteria/edit-tags.yaml`.
 
@@ -71,4 +71,4 @@ tags:
 
 ## Edit → save
 
-**Save** writes the file to disk and refreshes scan + lint in the UI. Git commit is left to your own workflow (not handled by Contexa).
+**Save** writes the file to disk and refreshes scan + lint in the UI. Git commit is left to your own workflow (not handled by Contexai).

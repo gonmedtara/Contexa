@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: 'Contexa',
+  title: 'Contexai',
   link: [
     {
       rel: 'stylesheet',
@@ -40,7 +40,7 @@ const issueCounts = computed(() => {
 const selectedIssues = computed(() => issuesFor(selectedPath.value))
 
 async function reloadAfterSave() {
-  clearNuxtData(['contexa-context', 'contexa-lint'])
+  clearNuxtData(['contexai-context', 'contexai-lint'])
   await refresh()
   await refreshLint()
 }
