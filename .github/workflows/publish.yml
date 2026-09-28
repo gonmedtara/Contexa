@@ -100,7 +100,7 @@ jobs:
           else
             echo "NPM_TOKEN is not set - using npm Trusted Publishing (OIDC)"
             echo "If this fails with ENEEDAUTH, either:"
-            echo "  1) Add repo secret NPM_TOKEN (npm automation token), or"
+            echo "  1) Add repo secret NPM_TOKEN (Automation token, or granular with Bypass 2FA), or"
             echo "  2) Configure Trusted Publisher on npmjs.com for workflow publish.yml"
             unset NODE_AUTH_TOKEN
             for rc in "$HOME/.npmrc" .npmrc; do
@@ -109,7 +109,10 @@ jobs:
               fi
             done
           fi
-          npm publish --access public --provenance
+          if ! npm publish --access public --provenance; then
+            echo "::error::npm publish failed. If you saw E403 about 2FA, recreate NPM_TOKEN as an Automation token or a granular token with Bypass 2FA enabled, then update the GitHub secret."
+            exit 1
+          fi
 
       - name: Push release commit and tag
         if: github.event_name == 'workflow_dispatch' && steps.skip.outputs.already == 'false'

@@ -4,8 +4,9 @@
 
 You need **either**:
 
-1. **Repo secret `NPM_TOKEN`** — npm automation/granular token with publish rights, or
-2. **Trusted Publisher** on npmjs.com for workflow `publish.yml` (repo `gonmedtara/Contexai`)
+1. **Repo secret `NPM_TOKEN`** — npm **Automation** token, or a **granular** token with **Bypass 2FA** + publish rights for `contexai`  
+   (classic tokens often fail with `403 … bypass 2fa enabled is required`)
+2. **Trusted Publisher** on npmjs.com for workflow `publish.yml` (repo `gonmedtara/Contexai`) — after the first publish
 
 Also set **Settings → Actions → Workflow permissions → Read and write** so the bump step can push the version commit and tag.
 

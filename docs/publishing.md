@@ -12,20 +12,34 @@ The publish workflow needs npm credentials. Pick **one**:
 
 ### Option A — `NPM_TOKEN` secret (simplest)
 
-1. npmjs.com → Access Tokens → **Granular Access Token** or **Automation**
-   - Permission: Read and write for package `contexai` (or publish for your user)
-2. GitHub repo → **Settings → Secrets and variables → Actions**
-3. New secret name: `NPM_TOKEN`, value: the token
+npm now rejects classic / weak tokens with:
+
+`403 … Two-factor authentication or granular access token with bypass 2fa enabled is required`
+
+Create a token that **bypasses 2FA**:
+
+1. https://www.npmjs.com/settings/~/tokens → **Generate New Token**
+2. Prefer one of:
+   - **Automation** (classic CI token — bypasses 2FA by design), or
+   - **Granular Access Token** with:
+     - Permission: **Read and write** on package `contexai` (or all packages)
+     - **Bypass two-factor authentication** enabled
+     - Expiration: as you like
+3. GitHub → **Settings → Secrets and variables → Actions**
+4. Set secret `NPM_TOKEN` to the new value (replace the old token if you already had one)
+
+Then re-run **Publish npm**.
 
 ### Option B — npm Trusted Publishing (OIDC, no long-lived token)
 
-1. Publish the package at least once with Option A, **or** create it on npm first
-2. npmjs.com → package `contexai` → **Settings → Trusted Publisher → GitHub Actions**
+After the **first** successful publish (or after creating the empty package on npm):
+
+1. npmjs.com → package `contexai` → **Settings → Trusted Publisher → GitHub Actions**
    - Organization or user: `gonmedtara`
    - Repository: `Contexai`
    - Workflow filename: `publish.yml`
-   - Environment: leave empty (this workflow does not use an environment)
-3. You can remove `NPM_TOKEN` afterward if you want OIDC-only
+   - Environment: leave empty
+2. You can remove `NPM_TOKEN` afterward and publish with OIDC only
 
 Also enable for the bump+push step:
 
