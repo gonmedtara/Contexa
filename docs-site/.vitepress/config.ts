@@ -20,9 +20,12 @@ export default defineConfig({
         href: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap',
       },
     ],
+    ['link', { rel: 'icon', href: '/Contexai/favicon.ico', sizes: 'any' }],
+    ['link', { rel: 'icon', href: '/Contexai/favicon.svg', type: 'image/svg+xml' }],
+    ['link', { rel: 'apple-touch-icon', href: '/Contexai/apple-touch-icon.png', sizes: '180x180' }],
   ],
   themeConfig: {
-    // Text wordmark for now; set `logo: '/logo.svg'` when the final mark is ready.
+    logo: '/icon.svg',
     siteTitle: 'Contexai',
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },

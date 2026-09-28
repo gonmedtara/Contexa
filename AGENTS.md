@@ -22,7 +22,7 @@ npx contexai
 
 - Prefer external criteria / templates (`criteria/*.yaml`, host `.contexai/*`) over frozen in-code lists.
 - Zero required user config at launch.
-- Logo slot: replace `public/logo.svg` when ready.
+- Brand mark: `brand/icon.png` (+ generated `public/logo.svg`, favicons).
 - Lint modality language is grounded in RFC 2119 / RFC 8174 (BCP 14).
 
 ## Docs & release

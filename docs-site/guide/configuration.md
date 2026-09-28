@@ -43,4 +43,4 @@ tags:
 
 ## Branding
 
-Replace `public/logo.svg` in the Contexai package (or fork) when you have a final logo. No theme redesign is required.
+Brand assets live in `brand/` and `public/` (`logo.svg`, `favicon.svg`, `favicon.ico`). Update those files to change the mark.
