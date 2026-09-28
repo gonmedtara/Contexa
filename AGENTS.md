@@ -14,6 +14,8 @@ npx contexai
 | `agents` | `AGENTS.md` |
 | `claude` | `CLAUDE.md` |
 | `copilot` | `.github/copilot-instructions.md`, `.github/instructions/**/*.instructions.md` |
+| `copilot-agent` | `.github/agents/**/*.agent.md` |
+| `copilot-prompt` | `.github/prompts/**/*.prompt.md` |
 | `ide-rule` | IDE rule files under the editor `rules` directory |
 | `windsurf` | `.windsurfrules` |
 | `skill` | `**/SKILL.md` |

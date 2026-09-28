@@ -19,6 +19,8 @@ const TYPE_LABELS: Record<ContextFileType, string> = {
   agents: 'AGENTS',
   claude: 'CLAUDE',
   copilot: 'Copilot',
+  'copilot-agent': 'Agent',
+  'copilot-prompt': 'Prompt',
   'ide-rule': 'IDE rule',
   windsurf: 'Windsurf',
   skill: 'Skill',

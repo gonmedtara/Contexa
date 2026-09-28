@@ -21,7 +21,7 @@ rules:
     enabled: true
     severity: error
     description: Certain context file types should expose a description in YAML frontmatter.
-    types: [ide-rule, skill, copilot]
+    types: [ide-rule, skill, copilot, copilot-agent, copilot-prompt]
     requireFrontmatterKeys: [description]
 
   - id: empty-section

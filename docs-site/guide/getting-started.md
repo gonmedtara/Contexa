@@ -29,6 +29,7 @@ npx contexai /path/to/repo
 - `AGENTS.md`
 - `CLAUDE.md`
 - `.github/copilot-instructions.md` and `.github/instructions/**/*.instructions.md`
+- `.github/agents/**/*.agent.md` and `.github/prompts/**/*.prompt.md`
 - IDE rule files under the editor `rules` directory
 - `.windsurfrules`
 - `**/SKILL.md`

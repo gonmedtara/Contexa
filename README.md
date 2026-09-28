@@ -29,7 +29,7 @@ npx contexai /path/to/repo
 
 ## What it does
 
-- Discovers AI context files (`AGENTS.md`, `CLAUDE.md`, Copilot instructions, IDE rules, `.windsurfrules`, `SKILL.md`, …)
+- Discovers AI context files (`AGENTS.md`, `CLAUDE.md`, Copilot instructions / agents / prompts, IDE rules, `.windsurfrules`, `SKILL.md`, …)
 - Shows them in a file tree
 - Lints with externalized criteria (`criteria/lint.yaml`, overridable via `.contexai/lint.yaml`)
 - Edit mode with reusable tags (frontmatter, MUST/SHOULD, XML blocks) + diff + save

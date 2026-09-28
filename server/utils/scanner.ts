@@ -68,6 +68,21 @@ function classifyPath(relativePath: string): ContextFileType | null {
     return 'copilot'
   }
 
+  // GitHub Copilot custom agents and prompt files
+  // https://docs.github.com/en/copilot/concepts/agents/about-custom-agents
+  if (
+    (normalized.includes('/.github/agents/') || normalized.startsWith('.github/agents/'))
+    && name.endsWith('.agent.md')
+  ) {
+    return 'copilot-agent'
+  }
+  if (
+    (normalized.includes('/.github/prompts/') || normalized.startsWith('.github/prompts/'))
+    && name.endsWith('.prompt.md')
+  ) {
+    return 'copilot-prompt'
+  }
+
   // IDE agent rules directory (dotfolder + /rules/)
   const ideRulesMarker = '/.' + 'cursor' + '/rules/'
   if (
